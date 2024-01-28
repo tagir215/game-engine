@@ -4,7 +4,7 @@
 
 # Add source to this project's executable.
 set(GLAD_GL "${GLFW_SOURCE_DIR}/deps/glad/gl.h" "${GLFW_SOURCE_DIR}/deps/glad_gl.c")
-add_executable (main "main_project1.cpp"    "application.h" "application.cpp" ${GLAD_GL} "game/gameobject.h" "game/gameobject.cpp"  "shader/shader.h" "shader/shader.cpp"  "game/camera.h" "texture/texture.h" "texture/texture.cpp" "texture/texturefactory.h" "texture/texturefactory.cpp" "texture/texturestorage.h"  "texture/playerkeyframes.h" "texture/playerkeyframes.cpp" "texture/keyframes.h" "game/transform.h" "game/renderer.h" "game/renderer.cpp" "game/mesh.h" "game/mesh.cpp" "input/inputmanager.h" "input/inputmanager.cpp" "behaviors/systembase.h" "behaviors/playerbehavior.h" "behaviors/playerbehavior.cpp" "behaviors/transformer.h" "behaviors/transformer.cpp")
+add_executable (main "main_project1.cpp"    "application.h" "application.cpp" ${GLAD_GL} "game/gameobject.h" "game/gameobject.cpp"  "shader/shader.h" "shader/shader.cpp"  "game/camera.h" "texture_components/texture.h" "texture_components/texture.cpp" "texture_components/texturefactory.h" "texture_components/texturefactory.cpp" "texture_components/texturestorage.h"  "texture_components/playerkeyframes.h" "texture_components/playerkeyframes.cpp" "texture_components/keyframes.h" "components/transform.h" "systems/renderer.h" "systems/renderer.cpp" "components/mesh.h" "components/mesh.cpp" "input/inputmanager.h" "input/inputmanager.cpp" "systems/systembase.h" "systems/playerbehavior.h" "systems/playerbehavior.cpp" "util/transformer.h" "util/transformer.cpp" "systems/gravitysystem.h" "systems/gravitysystem.cpp" "components/mass.h")
 
 target_link_libraries(main PUBLIC glfw PUBLIC glm)
 

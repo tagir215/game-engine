@@ -1,6 +1,6 @@
 #include "application.h"
-#include "./texture/playerkeyframes.h"
-#include "./behaviors/playerbehavior.h"
+#include "./texture_components/playerkeyframes.h"
+#include "./systems/playerbehavior.h"
 
 Application::Application() {
 
@@ -10,19 +10,24 @@ Application::Application() {
 	camera = std::make_unique<Camera>(0, 640, 0, 480);
 	camera->addTransform(Transform(glm::vec3(-320.0f, -240.0f, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
 
-	GameObject* plane = new GameObject();
+	GameObject* player = new GameObject();
 	Texture* tex = textureStorage.WALK_BASIC;
 	Mesh* mesh = new Mesh();
 	tex->setKeyframes(new PlayerKeyframes());
-	plane->addTexture(tex);
-	plane->addMesh(mesh);
-	plane->addTransform(Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(50, 50, 1)));
-	gameObjects.push_back(plane);
+	player->addTexture(tex);
+	player->addMesh(mesh);
+	player->addMass(Mass(1.0f));
+	player->addTransform(Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(50, 50, 1)));
+	gameObjects.push_back(player);
 	systems.push_back(new PlayerBehavior(gameObjects,ANIMATION_FRAME_TIME));
+	systems.push_back(new GravitySystem(gameObjects));
 }
 Application::~Application() {
-	for (GameObject* o : gameObjects) {
-		delete o;
+	for (GameObject* gameObject : gameObjects) {
+		delete gameObject;
+	}
+	for (SystemBase* system : systems) {
+		delete system;
 	}
 }
 void Application::render(GLFWwindow* window) {

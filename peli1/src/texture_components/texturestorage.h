@@ -10,6 +10,6 @@ struct TextureStorage{
 		WALK_BASIC = factory.getWalkTexture();
 	}
 	~TextureStorage() {
-
+		delete WALK_BASIC;
 	}
 };

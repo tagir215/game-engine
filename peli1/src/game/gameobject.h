@@ -1,7 +1,8 @@
 #pragma once
-#include "../texture/texture.h"
-#include "transform.h"
-#include "mesh.h"
+#include "../texture_components/texture.h"
+#include "../components/transform.h"
+#include "../components/mesh.h"
+#include "../components/mass.h"
 
 
 class GameObject {
@@ -18,6 +19,9 @@ public:
     void addMesh(Mesh* mesh) {
         this->mesh = mesh;
     }
+    void addMass(Mass mass) {
+        this->mass = mass;
+    }
 
     Texture* getTexture() {
         return texture;
@@ -27,6 +31,9 @@ public:
     }
     Mesh* getMesh() {
         return mesh;
+    }
+    Mass& getMass() {
+        return mass;
     }
 
     int getId() {
@@ -39,4 +46,5 @@ private:
     Texture* texture;
     Transform transform;
     Mesh* mesh;
+    Mass mass;
 };

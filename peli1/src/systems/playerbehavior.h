@@ -9,7 +9,7 @@ public:
 private:
 	const float ANIMATION_FRAME_TIME;
 	float cumilatedTime = 0;
-	const float	WALKING_SPEED = 100.0f;
+	const float	WALKING_SPEED = 200.0f;
 
 	void updateAnimation(GameObject* object, float deltaTime);
 	void updatePlayerPosition(GameObject* object,float deltaTime);

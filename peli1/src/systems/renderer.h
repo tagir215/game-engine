@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
-#include "gameobject.h"
-#include "camera.h"
+#include "../game/gameobject.h"
+#include "../game/camera.h"
 #include "../shader/shader.h"
 #include <glm/glm.hpp> 
 #include <glm/gtx/transform.hpp>
