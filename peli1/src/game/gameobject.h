@@ -3,7 +3,8 @@
 #include "../components/transform.h"
 #include "../components/mesh.h"
 #include "../components/mass.h"
-
+#include "../components/velocity.h"
+#include "../components/shaderinfo.h"
 
 class GameObject {
 public:
@@ -22,6 +23,12 @@ public:
     void addMass(Mass mass) {
         this->mass = mass;
     }
+    void addVelocity(Velocity velocity) {
+        this->velocity = velocity;
+    }
+    void addShaderInfo(ShaderInfo shaderInfo) {
+        this->shaderInfo = shaderInfo;
+    }
 
     Texture* getTexture() {
         return texture;
@@ -35,6 +42,12 @@ public:
     Mass& getMass() {
         return mass;
     }
+    Velocity& getVelocity() {
+        return velocity;
+    }
+    ShaderInfo& getShaderInfo() {
+        return shaderInfo;
+    }
 
     int getId() {
         return id;
@@ -47,4 +60,6 @@ private:
     Transform transform;
     Mesh* mesh;
     Mass mass;
+    Velocity velocity;
+    ShaderInfo shaderInfo;
 };

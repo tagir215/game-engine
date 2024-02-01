@@ -1,7 +1,6 @@
 #pragma once
 #include "../game/gameobject.h"
 #include "../input/inputmanager.h"
-#include "../util/transformer.h"
 
 class SystemBase {
 public:
@@ -10,5 +9,4 @@ public:
 protected:
 	std::vector<GameObject*> gameObjects;
 	InputManager& inputManager = InputManager::getInstance();
-	Transformer transformer;
 };

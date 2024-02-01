@@ -11,6 +11,10 @@ public:
 		return vao;
 	}
 
+	float* getColor() {
+		return color;
+	}
+
 	void updateTextureBuffer(std::array<float, 12>coords);
 
 private:

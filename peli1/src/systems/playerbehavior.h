@@ -1,5 +1,6 @@
 #pragma once
 #include "systembase.h"
+#include "../util/transformer.h"
 
 class PlayerBehavior : public SystemBase {
 public:
@@ -11,6 +12,7 @@ private:
 	float cumilatedTime = 0;
 	const float	WALKING_SPEED = 200.0f;
 
+	Transformer transformer;
 	void updateAnimation(GameObject* object, float deltaTime);
 	void updatePlayerPosition(GameObject* object,float deltaTime);
 };
