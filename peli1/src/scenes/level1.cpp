@@ -4,6 +4,7 @@
 #include "../systems/playerbehavior.h"
 #include "../systems/gravitysystem.h"
 #include "../systems/movementsystem.h"
+#include "../systems/collisionsystem.h"
 #include "level1factory.h"
 
 Level1::Level1(float ANIMATION_FRAME_TIME) : Level(ANIMATION_FRAME_TIME){
@@ -19,6 +20,7 @@ Level1::Level1(float ANIMATION_FRAME_TIME) : Level(ANIMATION_FRAME_TIME){
 
 	systems.push_back(new PlayerBehavior(gameObjects,ANIMATION_FRAME_TIME));
 	systems.push_back(new GravitySystem(gameObjects));
+	systems.push_back(new CollisionSystem(gameObjects));
 	systems.push_back(new MovementSystem(gameObjects));
 
 }

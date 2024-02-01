@@ -6,6 +6,7 @@ void InputManager::update(int key, bool b) {
 	case GLFW_KEY_RIGHT: right = b; break;
 	case GLFW_KEY_UP: up = b; break;
 	case GLFW_KEY_DOWN: down = b; break;
+	case GLFW_KEY_SPACE: space = b; break;
 	}
 }
 

@@ -2,7 +2,7 @@
 #include "../texture_components/texture.h"
 #include "../components/transform.h"
 #include "../components/mesh.h"
-#include "../components/mass.h"
+#include "../components/physics.h"
 #include "../components/velocity.h"
 #include "../components/shaderinfo.h"
 
@@ -20,8 +20,8 @@ public:
     void addMesh(Mesh* mesh) {
         this->mesh = mesh;
     }
-    void addMass(Mass mass) {
-        this->mass = mass;
+    void addPhysics(Physics mass) {
+        this->physics = mass;
     }
     void addVelocity(Velocity velocity) {
         this->velocity = velocity;
@@ -39,8 +39,8 @@ public:
     Mesh* getMesh() {
         return mesh;
     }
-    Mass& getMass() {
-        return mass;
+    Physics& getPhysics() {
+        return physics;
     }
     Velocity& getVelocity() {
         return velocity;
@@ -59,7 +59,7 @@ private:
     Texture* texture;
     Transform transform;
     Mesh* mesh;
-    Mass mass;
+    Physics physics;
     Velocity velocity;
     ShaderInfo shaderInfo;
 };

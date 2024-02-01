@@ -39,7 +39,9 @@ int main(){
 		});
 
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
-
+ 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	float prevTime = (float)glfwGetTime();
 	while (!glfwWindowShouldClose(window)) {

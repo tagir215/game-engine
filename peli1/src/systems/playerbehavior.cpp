@@ -37,5 +37,9 @@ void PlayerBehavior::updatePlayerPosition(GameObject* object,float deltaTime){
 	else {
 		object->getVelocity().x = 0;
 	}
+
+	if (inputManager.isSpacePressed()) {
+		object->getVelocity().y = 500.0f;
+	}
 }
 
