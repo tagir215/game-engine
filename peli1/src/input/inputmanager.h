@@ -15,6 +15,7 @@ public:
 	bool isDownPressed() const { return down; };
 	bool isLeftPressed() const { return left; };
 	bool isRightPressed() const { return right; };
+	bool isSpacePressed() const { return space; };
 	
 private:
 
@@ -28,4 +29,5 @@ private:
 	bool down = false;
 	bool left = false;
 	bool right = false;
+	bool space = false;
 };
