@@ -4,4 +4,5 @@
 class LevelFactory {
 public:
 	virtual GameObject* buildGround() = 0;
+	virtual GameObject* buildBox() = 0;
 };

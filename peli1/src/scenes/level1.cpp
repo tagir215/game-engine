@@ -17,6 +17,7 @@ Level1::Level1(float ANIMATION_FRAME_TIME) : Level(ANIMATION_FRAME_TIME){
 
 	gameObjects.push_back(playerFactory.buildGameObject());
 	gameObjects.push_back(levelFactory.buildGround());
+	gameObjects.push_back(levelFactory.buildBox());
 
 	systems.push_back(new PlayerBehavior(gameObjects,ANIMATION_FRAME_TIME));
 	systems.push_back(new GravitySystem(gameObjects));
