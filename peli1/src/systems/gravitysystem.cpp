@@ -2,7 +2,7 @@
 
 void GravitySystem::onUpdate(float deltaTime){
 	for (GameObject* object : gameObjects) {
-		if (!object->getVelocity().active) {
+		if (!object->getPhysics().gravity) {
 			continue;
 		}
 		float newVelocity = GRAVITY_CONSTANT_THING * deltaTime + object->getVelocity().y;

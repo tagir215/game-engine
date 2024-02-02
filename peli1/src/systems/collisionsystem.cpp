@@ -10,10 +10,15 @@ bool checkCollision(GameObject* object1, GameObject* object2) {
 	float yDistance = fabs(object1->getTransform().position.y - object2->getTransform().position.y);
 	xDistance -= (object1->getPhysics().w / 2 + object2->getPhysics().w / 2);
 	yDistance -= (object1->getPhysics().h / 2 + object2->getPhysics().h / 2);
-	if (xDistance < 2 && yDistance <= 0) {
+	if (xDistance <= 0 && yDistance <= 0) {
 		return true;
 	}
 	return false;
+}
+
+glm::vec3 collisionDirection(GameObject* object1, GameObject* object2) {
+	
+	return glm::vec3(0,0,0);
 }
 
 void setForces(GameObject* object1, GameObject* object2) {
@@ -23,21 +28,20 @@ void setForces(GameObject* object1, GameObject* object2) {
 	Physics p2 = object2->getPhysics();
 
 	Velocity newV;
-	newV.x = (v1.x + v2.x) / (p1.mass + p2.mass);
-	newV.y = (v1.y + v2.y) / (p1.mass + p2.mass);
-	newV.z = (v1.z + v2.z) / (p1.mass + p2.mass);
+	newV.x = (v1.x * p1.mass + v2.x * p2.mass) / (p1.mass + p2.mass);
+	newV.y = (v1.y * p1.mass + v2.y * p2.mass) / (p1.mass + p2.mass);
+	newV.z = (v1.z * p1.mass + v2.z * p2.mass) / (p1.mass + p2.mass);
 
-	if (object1->getVelocity().active) {
-		object1->getVelocity().x += newV.x - v1.x;
-		object1->getVelocity().y += newV.y - v1.y;
-		object1->getVelocity().z += newV.z - v1.z;
-	}
-	if (object2->getVelocity().active) {
-		object2->getVelocity().x += newV.x - v2.x;
-		object2->getVelocity().y += newV.y - v2.y;
-		object2->getVelocity().z += newV.z - v2.z;
-	}
+	object1->getVelocity().x += newV.x - v1.x;
+	object1->getVelocity().y += newV.y - v1.y;
+	object1->getVelocity().z += newV.z - v1.z;
+
+	object2->getVelocity().x += newV.x - v2.x;
+	object2->getVelocity().y += newV.y - v2.y;
+	object2->getVelocity().z += newV.z - v2.z;
+
 }
+
 
 void CollisionSystem::onUpdate(float deltaTime) {
 	std::vector<std::vector<bool>>memo(gameObjects.size(), std::vector<bool>(gameObjects.size()));

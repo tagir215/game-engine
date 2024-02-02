@@ -7,7 +7,7 @@ GameObject* Level1Factory::buildGround() {
 	ground->addMesh(mesh);
 	ground->addTransform(Transform(glm::vec3(0, -100, 0), glm::vec3(0, 0, 0), glm::vec3(1000, 50, 1)));
 	ground->addShaderInfo(ShaderInfo(1));
-	ground->addPhysics(Physics(10000, true,0, 1000,50));
+	ground->addPhysics(Physics(100000, true,0,false, 1000,50));
 	return ground;
 }
 
@@ -19,6 +19,6 @@ GameObject* Level1Factory::buildBox() {
 	box->addShaderInfo(ShaderInfo(1));
 	box->addVelocity(Velocity(0, 0, 0));
 	box->addTransform(Transform(glm::vec3(200, 0, 0), glm::vec3(0, 0, 0), glm::vec3(50, 50, 1)));
-	box->addPhysics(Physics(50, true, 0, 50, 50));
+	box->addPhysics(Physics(50, true,0,true, 50, 50));
 	return box;
 }
