@@ -1,0 +1,5 @@
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+set(SFML_BUILD_AUDIO OFF CACHE BOOL "" FORCE)
+set(SFML_BUILD_NETWORK OFF CACHE BOOL "" FORCE)
+add_subdirectory("SFML-2.6.0")
+add_subdirectory("glm-master")
