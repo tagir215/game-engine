@@ -5,6 +5,7 @@
 #include <engine/gravitysystem.h>
 #include <engine/movementsystem.h>
 #include <engine/collisionsystem.h>
+#include <engine/texturemanager.h>
 #include "level1factory.h"
 
 Level1::Level1(float ANIMATION_FRAME_TIME) : Scene(ANIMATION_FRAME_TIME){

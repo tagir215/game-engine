@@ -8,5 +8,5 @@ public:
 	Texture* loadTexture(const std::string& filename);
 
 private:
-	const std::string ROOT_DIR = "../assets/textures/";
+	const std::string ROOT_DIR = "../../../engine/assets/textures/";
 };

@@ -1,6 +1,6 @@
 #include "../include/engine/texturemanager.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "../../../ext/stb-master/stb_image.h"
 
 TextureManager::TextureManager() {
 	stbi_set_flip_vertically_on_load(true);

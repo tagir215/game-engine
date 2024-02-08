@@ -25,8 +25,10 @@ namespace engine {
 		int sizeY;
 		std::string title;
 		bool m_running;
-		std::vector<Scene*>scenes;
 		Scene* currentScene;
+		GLFWwindow* window;
+	protected:
+		std::vector<Scene*>scenes;
 	};
 
 }

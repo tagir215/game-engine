@@ -1,13 +1,18 @@
 #include "playerfactory.h"
-#include "texturestorage.h"
 #include "playerkeyframes.h"
+#include <engine/texturemanager.h>
+
+PlayerFactory::PlayerFactory() {
+	
+}
 
 GameObject* PlayerFactory::buildGameObject() {
+	TextureManager textureManager;
+	Texture* texture = textureManager.loadTexture("walk-basic.png");
 	GameObject* player = new GameObject();
-	Texture* tex = TextureStorage::getInstance().WALK_BASIC;
 	Mesh* mesh = new Mesh();
-	tex->setKeyframes(new PlayerKeyframes());
-	player->addTexture(tex);
+	texture->setKeyframes(new PlayerKeyframes());
+	player->addTexture(texture);
 	player->addMesh(mesh);
 	player->addPhysics(Physics(50,true,0,true,0, 50,50));
 	player->addVelocity(Velocity(0, 0, 0));
