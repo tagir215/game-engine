@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\OMISTAJA\Desktop\kouluprojektit\grafiikkaohjelmointi\grafrepo2\CMakeFiles\37609d3b2caf7a63d7f8650b3ef5b5de\uninstall.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\OMISTAJA\Desktop\kouluprojektit\grafiikkaohjelmointi\grafrepo2\ext\glfw-3.3.2\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\OMISTAJA\Desktop\kouluprojektit\grafiikkaohjelmointi\grafrepo2\ext\glfw-3.3.2\CMakeFiles\uninstall" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{D18EA2F3-F0A5-3E97-A535-84B28B6B9481}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

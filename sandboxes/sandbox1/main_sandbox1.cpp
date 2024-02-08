@@ -11,11 +11,7 @@ public:
 		// TODO: Update logic comes here
 	}
 
-	///
-	/// \brief Virtual function render, which is needed to implement in derived class.
-	///
 	virtual void render() {
-		auto& renderer = getRenderer();
 		// TODO: Redner objects using renderer methods
 	}
 private:

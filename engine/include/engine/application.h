@@ -1,60 +1,32 @@
 #pragma once
-#include <engine/sfml_renderer.h>
+#include <glad/gl.h>
+#include <GLFW/glfw3.h>
+#include <stdio.h> 
+#include <vector>
+#include <iostream>
+#include "scene.h"
+#include <string>
 
 namespace engine {
 
-///
-/// \brief The Application class
-///
-class Application {
-public:
-	///
-	/// \brief Application constructor
-	///
-	Application(int sizeX, int sizeY, const std::string& title);
+	class Application {
+	public:
+		Application(int sizeX, int sizeY, const std::string& title);
+		~Application();
 
-	///
-	/// \brief Application destructor
-	///
-	~Application();
+		void stop();
+		int run();
+		void render(GLFWwindow* window);
+		void update(float deltaTime);
 
-	///
-	/// \brief Application run called by main function.
-	///
-	int run();
+	private:
+		const float ANIMATION_FRAME_TIME = 0.1f;
+		int sizeX;
+		int sizeY;
+		std::string title;
+		bool m_running;
+		std::vector<Scene*>scenes;
+		Scene* currentScene;
+	};
 
-	///
-	/// \brief Stops the application.
-	///
-	void stop();
-
-	///
-	/// \brief getRenderer
-	/// \return
-	///
-	inline SFMLRenderer& getRenderer() {
-		return m_renderer;
-	}
-
-	///
-	/// \brief Virtual function update, which is needed to implement in derived class.
-	/// \param deltaTime
-	///
-	virtual void update(float deltaTime) = 0;
-
-	///
-	/// \brief Virtual function render, which is needed to implement in derived class.
-	///
-	virtual void render() = 0;
-
-private:
-	Application();
-	Application(const Application&);
-	Application& operator=(const Application&);
-
-	bool m_running = false;
-	SFMLRenderer m_renderer;
-};
-
-} // End - namespace engine
-
+}
