@@ -8,10 +8,6 @@ public:
 		scenes.push_back(level);
 	}
 
-	///
-	/// \brief Virtual function update, which is needed to implement in derived class.
-	/// \param deltaTime
-	///
 	virtual void update(float deltaTime) {
 		// TODO: Update logic comes here
 	}
