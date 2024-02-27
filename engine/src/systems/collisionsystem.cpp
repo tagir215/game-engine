@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <limits>
 #include <sstream>
+#include <iostream>
 
 CollisionSystem::CollisionSystem(std::vector<GameObject*>gameObjects, Camera* camera) : SystemBase(gameObjects), camera(camera) {
 			
@@ -167,43 +168,52 @@ void setForces(CollisionInfo& collisionInfo) {
 	glm::vec3 movDir = objB->getVelocity().velocity;
 	if (glm::dot(movDir, collisionInfo.collisionNormal) > 1) return;
 
+	const float ENERGY_RETENTION = 0.6f;
+
 	glm::vec3 normal = glm::normalize(collisionInfo.collisionNormal);
 	glm::vec3 projection = -glm::dot(objB->getVelocity().velocity, normal) * normal;
 	glm::vec3 mirrorVector = projection + projection -  (-objB->getVelocity().velocity);
 
+	glm::vec3 collisionPointCentroid = calculateCentroid(collisionInfo.collisionPoints);
+	float radius =  glm::distance(collisionInfo.centroidB,collisionPointCentroid);
+
 	glm::vec3 velA = objA->getVelocity().velocity;
-	glm::vec3 velB = objB->getVelocity().velocity;
+
+	glm::vec3 centroidToCollision = collisionInfo.centroidB - collisionPointCentroid;
+	glm::vec3 zvector(0, 0, objB->getVelocity().rotation.z);
+	glm::vec3 rotVec = glm::cross(centroidToCollision,zvector);
+	float dotRotMirror = glm::dot(rotVec, normal);
+	float collisionSpeed = std::abs(objB->getVelocity().velocity.y + rotVec.y);
+	
+	glm::vec3 velB = glm::normalize(objB->getVelocity().velocity) * collisionSpeed;
 
 	glm::vec3 collisionVec = (objA->getPhysics().mass * velA + objB->getPhysics().mass * velB)
 			/ (objA->getPhysics().mass + objB->getPhysics().mass);
 
+	float collisionRot = collisionSpeed / radius;
+	glm::vec3 pToCentroid = collisionInfo.centroidB - collisionPointCentroid;
+	float idk = rotVec.x * rotVec.y;
+
 	glm::vec3 dvA = collisionVec - velA;
 	glm::vec3 dvB = collisionVec - velB + mirrorVector;
+	float drotB = objB->getVelocity().rotation.z - collisionRot;
 
-	glm::vec3 collisionPointCentroid = calculateCentroid(collisionInfo.collisionPoints);
-	
-	float radius =  objB->getTransform().scale.x/2;
-	float rotSpeed = (PI * 2 * radius) * (objB->getVelocity().rotation.z / (2 * PI));
-	float rot = (PI / 2) * ((glm::length(objB->getVelocity().velocity) + glm::length(rotSpeed)) / radius);
+	objA->getVelocity().velocity += dvA * ENERGY_RETENTION;
+	objB->getVelocity().velocity += dvB * ENERGY_RETENTION;
+	if (dotRotMirror<0)
+		objB->getVelocity().rotation.z *= -1 * ENERGY_RETENTION;
+	else 
+		objB->getVelocity().rotation.z += drotB * ENERGY_RETENTION;
 
-	glm::vec3 pToCentroid = collisionInfo.centroidB - collisionPointCentroid;
-	float idk = pToCentroid.x * pToCentroid.y;
-	if (idk < 0) rot = -rot;
-	float drotB = objB->getVelocity().rotation.z - rot;
-	
-	objA->getVelocity().velocity += dvA;
-	objB->getVelocity().velocity += dvB;
-	objB->getVelocity().rotation.z += drotB;
 }
 
 
 std::unordered_map<int, std::vector<glm::vec3>> CollisionSystem::transformVertices() {
 	std::unordered_map<int, std::vector<glm::vec3>>map;
-	glm::mat4 VP = camera->getProjectionMatrix() * glm::inverse(transformer.getModelMatrix(camera->getTransform()));
 	for (GameObject* object : gameObjects) {
 		if (!object->getPhysics().collidable) continue;
 		map[object->getId()] = std::vector<glm::vec3>();
-		glm::mat4 MVP = VP * transformer.getModelMatrix(object->getTransform());
+		glm::mat4 modelMatrix = transformer.getModelMatrix(object->getTransform());
 		std::array<float, 18>vertices = object->getMesh()->getVertices();
 		std::unordered_map<std::string, bool>memo;
 
@@ -217,7 +227,7 @@ std::unordered_map<int, std::vector<glm::vec3>> CollisionSystem::transformVertic
 			else {
 				continue;
 			}
-			map[object->getId()].push_back(MVP * vertex);
+			map[object->getId()].push_back(modelMatrix * vertex);
 		}
 	}
 	return map;

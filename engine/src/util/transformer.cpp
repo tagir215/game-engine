@@ -5,6 +5,10 @@ void Transformer::translate(Transform& transform, float dx, float dy, float dz) 
 }
 
 void Transformer::rotate(Transform& transform, float dx, float dy, float dz) {
+    const float radiansToDegrees = 180.0f / glm::pi<float>();
+    dx *= radiansToDegrees;
+    dy *= radiansToDegrees;
+    dz *= radiansToDegrees;
     transform.rotation = glm::vec3(transform.rotation.x + dx, transform.rotation.y + dy, transform.rotation.z + dz);
 }
 
