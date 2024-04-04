@@ -4,10 +4,9 @@ set(SFML_BUILD_NETWORK OFF CACHE BOOL "" FORCE)
 add_subdirectory("SFML-2.6.0")
 add_subdirectory(glfw-3.3.2)
 add_subdirectory(glm-0.9.9.7)
-include_directories("${GLFW_SOURCE_DIR}/deps")
-include_directories("stb-master")
 
 option(GLFW_BUILD_EXAMPLES "" OFF)
 option(GLFW_BUILD_TESTS "" OFF)
 option(GLFW_BUILD_DOCS "" OFF)
 option(GLFW_INSTALL "" OFF)
+

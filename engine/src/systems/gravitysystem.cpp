@@ -5,8 +5,8 @@ void GravitySystem::onUpdate(float deltaTime){
 		if (!object->getPhysics().gravity) {
 			continue;
 		}
-		float newVelocity = GRAVITY_CONSTANT_THING * deltaTime + object->getVelocity().y;
-		float newerVelocity = newVelocity - object->getVelocity().y;
-		object->getVelocity().y += newerVelocity;
+		float newVelocity = GRAVITY_CONSTANT_THING * deltaTime + object->getVelocity().velocity.y;
+		float newerVelocity = newVelocity - object->getVelocity().velocity.y;
+		object->getVelocity().velocity.y += newerVelocity;
 	}
 }

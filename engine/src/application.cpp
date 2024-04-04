@@ -4,16 +4,6 @@ namespace engine {
 
 	Application::Application(int sizeX, int sizeY, const std::string& title) 
 		: sizeX(sizeX), sizeY(sizeY), title(title), scenes(scenes) {
-	}
-	Application::~Application() {
-		for (Scene* scene : scenes) {
-			delete scene;
-		}
-	}
-	int Application::run() {
-		m_running = true;
-
-		currentScene = scenes[0];
 
 		glfwSetErrorCallback([](int error, const char* description) {
 			fprintf(stderr, "Error %d: %s\n", error, description);
@@ -21,14 +11,14 @@ namespace engine {
 
 		if (!glfwInit()) {
 			std::cerr << "failed to init glfw" << std::endl;
-			return -1;
+			return;
 		}
 
-		GLFWwindow* window = glfwCreateWindow(sizeX, sizeY, "window", NULL, NULL);
+		window = glfwCreateWindow(sizeX, sizeY, "window", NULL, NULL);
 		if (!window) {
 			glfwTerminate();
 			std::cerr << "failed to init glfw window" << std::endl;
-			return -1;
+			return;
 		}
 
 		glfwMakeContextCurrent(window);
@@ -47,6 +37,17 @@ namespace engine {
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+	Application::~Application() {
+		for (Scene* scene : scenes) {
+			delete scene;
+		}
+	}
+	int Application::run() {
+		m_running = true;
+
+		currentScene = scenes[0];
+
 
 		float prevTime = (float)glfwGetTime();
 		while (!glfwWindowShouldClose(window)) {

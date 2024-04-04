@@ -1,12 +1,13 @@
 #include <engine/application.h>
+#include "level1.h"
 
 class MyGame : public engine::Application {
 public:
-	MyGame() : engine::Application(800, 600, "Sandbox1") {}
-	///
-	/// \brief Virtual function update, which is needed to implement in derived class.
-	/// \param deltaTime
-	///
+	MyGame() : engine::Application(800, 600, "Sandbox1") {
+		Level1* level = new Level1(0.1f);
+		scenes.push_back(level);
+	}
+
 	virtual void update(float deltaTime) {
 		// TODO: Update logic comes here
 	}

@@ -6,5 +6,5 @@ public:
 	GravitySystem(std::vector<GameObject*>gameObjects) : SystemBase(gameObjects) {};
 	void onUpdate(float deltaTime) override;
 private:
-	float GRAVITY_CONSTANT_THING = -9.81f * 100;
+	float GRAVITY_CONSTANT_THING = -9.81f * 1;
 };

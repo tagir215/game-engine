@@ -1,10 +1,12 @@
 
 struct Velocity {
-	float x;
-	float y;
-	float z;
+	glm::vec3 velocity;
+	glm::vec3 rotation;
 	bool active;
-	Velocity() : x(0), y(0), z(0), active(false) {}
-	Velocity(float x, float y, float z) : x(x), y(y), z(z), active(true) {
+	Velocity() : velocity(0,0,0), rotation(0,0,0), active(false) {}
+	Velocity(float x, float y, float z) : rotation(0,0,0), active(true) {
+		velocity.x = x;
+		velocity.y = y;
+		velocity.z = z;
 	}
 };

@@ -1,7 +1,7 @@
 #pragma once
 #include "keyframes.h"
-#include <GLFW/glfw3.h>
 #include <glad/gl.h>
+#include <GLFW/glfw3.h>
 
 class Texture {
 public:

@@ -6,6 +6,4 @@ add_subdirectory("ext")
 add_subdirectory("engine")
 add_subdirectory("examples")
 add_subdirectory("sandboxes")
-include_directories("ext/stb-master")
 
-set(GLAD_GL "${GLFW_SOURCE_DIR}/deps/glad/gl.h" "${GLFW_SOURCE_DIR}/deps/glad_gl.c")

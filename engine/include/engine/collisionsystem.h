@@ -11,5 +11,6 @@ public:
 private:
 	Camera* camera;
 	Transformer transformer;
-	std::unordered_map<GameObject*, std::vector<glm::vec3>>transformVertices();
+	std::unordered_map<int, std::vector<glm::vec3>>transformVertices();
+
 };

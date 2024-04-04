@@ -4,6 +4,6 @@
 
 class Level1Factory : public LevelFactory {
 public:
-	virtual GameObject* buildGround() override;
-	virtual GameObject* buildBox() override;
+	virtual GameObject* buildGround(Transform& transform, float mass) override;
+	virtual GameObject* buildBox(Transform& transform, float mass) override;
 };
