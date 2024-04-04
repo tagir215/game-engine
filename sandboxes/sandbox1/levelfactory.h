@@ -3,6 +3,6 @@
 
 class LevelFactory {
 public:
-	virtual GameObject* buildGround() = 0;
-	virtual GameObject* buildBox() = 0;
+	virtual GameObject* buildGround(Transform& transform, float mass) = 0;
+	virtual GameObject* buildBox(Transform& transform, float mass) = 0;
 };

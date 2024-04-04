@@ -4,6 +4,6 @@
 class PlayerFactory : public GameObjectFactory {
 public:
 	PlayerFactory();
-	virtual GameObject* buildGameObject() override;
+	virtual GameObject* buildGameObject(Transform& transform) override;
 private:
 };

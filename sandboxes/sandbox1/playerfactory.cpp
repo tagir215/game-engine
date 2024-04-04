@@ -6,7 +6,7 @@ PlayerFactory::PlayerFactory() {
 	
 }
 
-GameObject* PlayerFactory::buildGameObject() {
+GameObject* PlayerFactory::buildGameObject(Transform& transform) {
 	TextureManager textureManager;
 	Texture* texture = textureManager.loadTexture("walk-basic.png");
 	GameObject* player = new GameObject();
@@ -14,9 +14,9 @@ GameObject* PlayerFactory::buildGameObject() {
 	texture->setKeyframes(new PlayerKeyframes());
 	player->addTexture(texture);
 	player->addMesh(mesh);
-	//player->addPhysics(Physics(50,true,0,true,0, 50,50));
+	player->addPhysics(Physics(50,true,0,true,0, 50,50,false));
 	player->addVelocity(Velocity(0, 0, 0));
 	player->addShaderInfo(ShaderInfo(0));
-	player->addTransform(Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(50, 50, 1)));
+	player->addTransform(transform);
 	return player;
 }
