@@ -5,6 +5,7 @@
 #include "physics.h"
 #include "velocity.h"
 #include "shaderinfo.h"
+#include "inputcomponent.h"
 
 class GameObject {
 public:
@@ -29,6 +30,9 @@ public:
     void addShaderInfo(ShaderInfo shaderInfo) {
         this->shaderInfo = shaderInfo;
     }
+    void addInputComponent(InputComponent* inputComponent) {
+        this->inputComponent = inputComponent;
+    }
 
     Texture* getTexture() {
         return texture;
@@ -48,6 +52,9 @@ public:
     ShaderInfo& getShaderInfo() {
         return shaderInfo;
     }
+    InputComponent* getInputComponent() {
+        return inputComponent;
+    }
 
     int getId() {
         return id;
@@ -56,9 +63,10 @@ public:
 private:
     int id;
     static int nextId;
-    Texture* texture;
+    Texture* texture = nullptr;
     Transform transform;
-    Mesh* mesh;
+    Mesh* mesh = nullptr;
+    InputComponent* inputComponent = nullptr;
     Physics physics;
     Velocity velocity;
     ShaderInfo shaderInfo;

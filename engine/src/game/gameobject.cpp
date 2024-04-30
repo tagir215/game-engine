@@ -1,8 +1,6 @@
 #include "../include/engine/gameobject.h"
 
 GameObject::GameObject() {
-	mesh = nullptr;
-	texture = nullptr;
 	id = nextId;
 	nextId++;
 }

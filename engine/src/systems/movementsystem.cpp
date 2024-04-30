@@ -1,6 +1,5 @@
 #include "../include/engine/movementsystem.h"
 
-
 void MovementSystem::onUpdate(float deltaTime) {
 	for (GameObject* object : gameObjects) {
 		transformer.translate(

@@ -6,11 +6,11 @@
 
 class CollisionSystem : public SystemBase {
 public:
-	CollisionSystem(std::vector<GameObject*>gameObjects, Camera* camera);
+	CollisionSystem(std::vector<GameObject*>gameObjects);
 	void onUpdate(float deltaTime) override;
 private:
-	Camera* camera;
 	Transformer transformer;
+
 	std::unordered_map<int, std::vector<glm::vec3>>transformVertices();
 
 };

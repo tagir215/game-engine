@@ -19,8 +19,8 @@ Level1::Level1(float ANIMATION_FRAME_TIME) : Scene(ANIMATION_FRAME_TIME){
 	Transform transformP = Transform(glm::vec3(-100, 0, 0), glm::vec3(0, 0, 0), glm::vec3(50, 50, 1));
 	gameObjects.push_back(playerFactory.buildGameObject(transformP));
 
-	Transform transformG = Transform(Transform(glm::vec3(10, -100, 0), glm::vec3(0, 0, 10), glm::vec3(500, 50, 1)));
-	gameObjects.push_back(levelFactory.buildGround(transformG,1000000000000000000));
+	Transform transformG = Transform(Transform(glm::vec3(10, -100, 0), glm::vec3(0, 0, 0), glm::vec3(500, 50, 1)));
+	gameObjects.push_back(levelFactory.buildGround(transformG,100000000000000000));
 
 	Transform transformB = Transform(Transform(glm::vec3(0, 10, 1), glm::vec3(0, 0, 0), glm::vec3(50, 50, 1)));
 	gameObjects.push_back(levelFactory.buildBox(transformB,100));
@@ -28,12 +28,12 @@ Level1::Level1(float ANIMATION_FRAME_TIME) : Scene(ANIMATION_FRAME_TIME){
 	Transform transformB2 = Transform(Transform(glm::vec3(100, 100, 1), glm::vec3(0, 0, 0), glm::vec3(60, 60, 1)));
 	gameObjects.push_back(levelFactory.buildBox(transformB2,500000));
 
-	Transform transformB3 = Transform(Transform(glm::vec3(50, 200, 1), glm::vec3(0, 0, 3), glm::vec3(200, 30, 1)));
+	Transform transformB3 = Transform(Transform(glm::vec3(50, 200, 1), glm::vec3(0, 0, 0), glm::vec3(200, 30, 1)));
 	gameObjects.push_back(levelFactory.buildBox(transformB3,300));
 
 	systems.push_back(new PlayerBehavior(gameObjects,ANIMATION_FRAME_TIME));
 	systems.push_back(new GravitySystem(gameObjects));
-	systems.push_back(new CollisionSystem(gameObjects,camera.get()));
+	systems.push_back(new CollisionSystem(gameObjects));
 	systems.push_back(new MovementSystem(gameObjects));
 
 }

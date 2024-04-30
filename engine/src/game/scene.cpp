@@ -21,6 +21,9 @@ Scene::Scene(float ANIMATION_FRAME_TIME) : ANIMATION_FRAME_TIME(ANIMATION_FRAME_
 
 Scene::~Scene() {
 	for (GameObject* gameObject : gameObjects) {
+		delete gameObject->getInputComponent();
+		delete gameObject->getTexture();
+		delete gameObject->getMesh();
 		delete gameObject;
 	}
 	for (SystemBase* system : systems) {
