@@ -425,7 +425,9 @@ void CollisionSystem::onUpdate(float deltaTime) {
 	std::vector<std::vector<bool>>memo(gameObjects.size(), std::vector<bool>(gameObjects.size()));
 	std::unordered_map<int, std::vector<glm::vec3>>map = transformVertices();
 	for (int i = 0; i < gameObjects.size(); ++i) {
+		if (!gameObjects[i]->getPhysics().collidable) continue;
 		for (int j = 0; j < gameObjects.size(); ++j) {
+			if (!gameObjects[j]->getPhysics().collidable) continue;
 			if (i == j) continue;
 			int smaller = i < j ? i : j;
 			int bigger = i > j ? i : j;

@@ -8,6 +8,7 @@
 #include "../scripts/entities/wallentity.h"
 #include "../scripts/entities/brickentity.h"
 
+
 Level_1::Level_1(float ANIMATION_TIME_FRAME) : Scene(ANIMATION_TIME_FRAME)
 {
 	camera = std::make_unique<Camera>(0, 640, 0, 480);
@@ -21,15 +22,44 @@ Level_1::Level_1(float ANIMATION_TIME_FRAME) : Scene(ANIMATION_TIME_FRAME)
 	ProjectileEntity* projectile = new ProjectileEntity();
 	gameObjects.push_back(projectile);
 
-	WallEntity* wall = new WallEntity(Transform(glm::vec3(200,0,0),glm::vec3(0,0,0),glm::vec3(10,400,1)));
-	gameObjects.push_back(wall);
+	WallEntity* wallR = new WallEntity(Transform(glm::vec3(300,0,0),glm::vec3(0,0,0),glm::vec3(10,460,1)));
+	gameObjects.push_back(wallR);
+	WallEntity* wallL = new WallEntity(Transform(glm::vec3(-300,0,0),glm::vec3(0,0,0),glm::vec3(10,460,1)));
+	gameObjects.push_back(wallL);
+	WallEntity* wallT = new WallEntity(Transform(glm::vec3(0,230,0),glm::vec3(0,0,0),glm::vec3(600,10,1)));
+	gameObjects.push_back(wallT);
 
-	BrickEntity* brick = new BrickEntity(Transform(glm::vec3(0, 400, 0), glm::vec3(0, 0, 0), glm::vec3(100, 40, 1)));
-	gameObjects.push_back(brick);
-
+	createBricks();
 
 	systems.push_back(new CharacterSystem(gameObjects));
 	systems.push_back(new GravitySystem(gameObjects));
 	systems.push_back(new CollisionSystem(gameObjects));
 	systems.push_back(new MovementSystem(gameObjects));
+}
+
+void Level_1::createBricks()
+{
+	const int WIDTH = 40; 
+	const int HEIGHT = 18;
+	const int GAP_X = 5;
+	const int GAP_Y = 5;
+	const int START_X = -270;
+	const int START_Y = 50;
+
+	const int WIDTH_GAME_SCREEN = 600;
+	const int COUNT_X = WIDTH_GAME_SCREEN / (WIDTH + GAP_X);
+	const int COUNT_Y = 4;
+
+	for (int x = 0; x < COUNT_X; ++x) {
+		for (int y = 0; y < COUNT_Y; ++y) {
+			Transform t(
+				glm::vec3(START_X + (WIDTH + GAP_X) * x, START_Y + (HEIGHT + GAP_Y) * y, 0), 
+				glm::vec3(0, 0, 0), 
+				glm::vec3(WIDTH, HEIGHT, 1)
+			);
+			BrickEntity* brick = new BrickEntity(t);
+			gameObjects.push_back(brick);
+		}
+	}
+
 }
