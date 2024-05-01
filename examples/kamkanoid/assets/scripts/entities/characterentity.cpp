@@ -10,6 +10,8 @@ CharacterEntity::CharacterEntity()
 	Transform transform(glm::vec3(0,-150,0),glm::vec3(0,0,0),glm::vec3(100,20,1));
 	addTransform(transform);
 
+	addPhysics(Physics(10000000000, true, 1, false, 0, 100, 20, false));
+
 	addShaderInfo(ShaderInfo(1));
 	addInputComponent(new InputComponent());
 

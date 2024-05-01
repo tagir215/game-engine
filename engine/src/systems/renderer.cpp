@@ -1,4 +1,5 @@
 #include "../include/engine/renderer.h"
+#include <iostream>
 
 Renderer::Renderer(std::unordered_map<int,Shader*>shaderMap) : shaderMap(shaderMap) {
 }
@@ -7,7 +8,7 @@ void Renderer::render(std::vector<GameObject*>& gameObjects, Camera* camera) {
 	glm::mat4 vpMatrix = camera->getProjectionMatrix() * glm::inverse(transformer.getModelMatrix(camera->getTransform()));
 	glm::mat4 identityMatrix = glm::mat4(1.0f);
 	for (GameObject* object : gameObjects) {
-		if (object->getMesh() == nullptr) {
+		if (object->getMesh() == nullptr || object->getShaderInfo().shaderId == -1) {
 			continue;
 		}
 	

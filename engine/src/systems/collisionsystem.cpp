@@ -222,7 +222,7 @@ void setVelocities(CollisionObjectInfo& collisionObjectInfo) {
 		return;
 	}
 
-	const float ENERGY_RETENTION = 0.5f;
+	const float ENERGY_RETENTION = collisionObjectInfo.obj->getPhysics().elasticity;
 	glm::vec3 collisionToCentroid = collisionObjectInfo.collisionPoint - collisionObjectInfo.centroid;
 	float projectionLength = glm::dot(collisionToCentroid, collisionObjectInfo.velocityAfterCollision) / glm::length(collisionObjectInfo.velocityAfterCollision);
 	glm::vec3 projection = glm::normalize(collisionObjectInfo.velocityAfterCollision) * projectionLength;

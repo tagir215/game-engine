@@ -3,6 +3,6 @@
 
 struct ShaderInfo{
 	int shaderId;
-	ShaderInfo() : shaderId(0) {}
+	ShaderInfo() : shaderId(-1) {}
 	ShaderInfo(int id) : shaderId(id) {}
 };
