@@ -13,6 +13,15 @@ public:
 	void render();
 	void update(float deltaTime);
 
+	SystemBase* getSystemByType(const std::type_info& type) {
+		for (SystemBase* system : systems) {
+			if (typeid(*system) == type) {
+				return system;
+			}
+		}
+		return nullptr;
+	}
+
 protected:
 	std::vector<GameObject*>gameObjects;
 	std::unique_ptr<Camera> camera;

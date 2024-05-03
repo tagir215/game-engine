@@ -437,6 +437,7 @@ void CollisionSystem::onUpdate(float deltaTime) {
 			if (collision.collides && !memo[smaller][bigger]) {
 				setForces(collision);
 				memo[smaller][bigger] = true;
+				onHitEvent.broadcast(gameObjects[i],gameObjects[j]);
 			}
 		}
 	}

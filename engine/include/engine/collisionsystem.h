@@ -3,11 +3,13 @@
 #include "camera.h"
 #include "transformer.h"
 #include <unordered_map>
+#include "delegate.h"
 
 class CollisionSystem : public SystemBase {
 public:
 	CollisionSystem(std::vector<GameObject*>gameObjects);
 	void onUpdate(float deltaTime) override;
+	Delegate<void(GameObject* thisObject, GameObject* otherObject)>onHitEvent;
 private:
 	Transformer transformer;
 
