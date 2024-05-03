@@ -1,7 +1,7 @@
 #include "characterentity.h"
 #include "engine/mesh.h"
 
-CharacterEntity::CharacterEntity()
+CharacterEntity::CharacterEntity(Scene* scene) : GameObject(scene)
 {
 	Mesh* mesh = new Mesh();
 	mesh->setColor(1, 1, 0, 1);
@@ -10,7 +10,7 @@ CharacterEntity::CharacterEntity()
 	Transform transform(glm::vec3(0,-150,0),glm::vec3(0,0,0),glm::vec3(100,20,1));
 	addTransform(transform);
 
-	addPhysics(Physics(10000000000, true, 1, false, 0, 100, 20, false));
+	addPhysics(Physics(1000, true, 1, false, 0, 100, 20, false));
 
 	addShaderInfo(ShaderInfo(1));
 	addInputComponent(new InputComponent());

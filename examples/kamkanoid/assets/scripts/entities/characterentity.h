@@ -3,5 +3,5 @@
 
 class CharacterEntity : public GameObject {
 public:	
-	CharacterEntity();
+	CharacterEntity(Scene* scene);
 };

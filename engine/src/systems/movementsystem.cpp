@@ -4,9 +4,9 @@ void MovementSystem::onUpdate(float deltaTime) {
 	for (GameObject* object : gameObjects) {
 		transformer.translate(
 			object->getTransform(), 
-			object->getVelocity().velocity.x*deltaTime, 
-			object->getVelocity().velocity.y*deltaTime, 
-			object->getVelocity().velocity.z*deltaTime
+			object->getVelocity().linearVelocity.x*deltaTime, 
+			object->getVelocity().linearVelocity.y*deltaTime, 
+			object->getVelocity().linearVelocity.z*deltaTime
 		);
 		transformer.rotate(object->getTransform(),
 			object->getVelocity().rotation.x*deltaTime,

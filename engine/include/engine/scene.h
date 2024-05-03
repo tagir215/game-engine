@@ -1,7 +1,6 @@
 #pragma once
 #include "renderer.h"
 #include "systembase.h"
-#include "camera.h"
 #include <vector>
 #include <memory>
 #include "../assets/shaders/ShaderSource.h"

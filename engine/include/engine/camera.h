@@ -4,7 +4,7 @@
 
 class Camera : public GameObject {
 public:
-    Camera(float left, float right, float bottom, float top) : GameObject() {
+    Camera(Scene* scene, float left, float right, float bottom, float top) : GameObject(scene) {
         m_projection = glm::ortho(left, right, bottom, top);
     }
 

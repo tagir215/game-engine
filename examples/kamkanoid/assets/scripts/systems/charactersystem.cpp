@@ -15,13 +15,13 @@ void CharacterSystem::onUpdate(float deltaTime)
 		}
 		InputManager inputManager = InputManager::getInstance();
 		if (inputManager.isLeftPressed()) {
-			o->getVelocity().velocity.x = -MOVEMENT_SPEED;
+			o->getVelocity().linearVelocity.x = -MOVEMENT_SPEED;
 		}
 		else if (inputManager.isRightPressed()) {
-			o->getVelocity().velocity.x = MOVEMENT_SPEED;
+			o->getVelocity().linearVelocity.x = MOVEMENT_SPEED;
 		}
 		else {
-			o->getVelocity().velocity.x = 0;
+			o->getVelocity().linearVelocity.x = 0;
 		}
 	}
 }

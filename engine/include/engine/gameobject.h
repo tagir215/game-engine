@@ -1,4 +1,5 @@
 #pragma once
+
 #include "texture.h"
 #include "transform.h"
 #include "mesh.h"
@@ -6,10 +7,11 @@
 #include "velocity.h"
 #include "shaderinfo.h"
 #include "inputcomponent.h"
+class Scene;
 
 class GameObject {
 public:
-    GameObject();
+    GameObject(Scene* parent);
 	~GameObject();
 
     void addTexture(Texture* texture) {
@@ -34,6 +36,9 @@ public:
         this->inputComponent = inputComponent;
     }
 
+    Scene* getParent() {
+        return parentScene;
+    }
     Texture* getTexture() {
         return texture;
     }
@@ -64,10 +69,11 @@ private:
     int id;
     static int nextId;
     Texture* texture = nullptr;
-    Transform transform;
     Mesh* mesh = nullptr;
     InputComponent* inputComponent = nullptr;
+    Transform transform;
     Physics physics;
     Velocity velocity;
     ShaderInfo shaderInfo;
+    Scene* parentScene;
 };

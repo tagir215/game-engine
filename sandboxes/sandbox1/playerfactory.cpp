@@ -6,10 +6,10 @@ PlayerFactory::PlayerFactory() {
 	
 }
 
-GameObject* PlayerFactory::buildGameObject(Transform& transform) {
+GameObject* PlayerFactory::buildGameObject(Scene* scene,Transform& transform) {
 	TextureManager textureManager;
 	Texture* texture = textureManager.loadTexture("walk-basic.png");
-	GameObject* player = new GameObject();
+	GameObject* player = new GameObject(scene);
 	Mesh* mesh = new Mesh();
 	texture->setKeyframes(new PlayerKeyframes());
 	player->addTexture(texture);

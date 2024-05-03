@@ -1,7 +1,7 @@
 #include "level1factory.h"
 
-GameObject* Level1Factory::buildGround(Transform& transform, float mass) {
-	GameObject* ground = new GameObject();
+GameObject* Level1Factory::buildGround(Scene* scene, Transform& transform, float mass) {
+	GameObject* ground = new GameObject(scene);
 	Mesh* mesh = new Mesh();
 	mesh->setColor(0.5f,0,0,1);
 	ground->addMesh(mesh);
@@ -11,8 +11,8 @@ GameObject* Level1Factory::buildGround(Transform& transform, float mass) {
 	return ground;
 }
 
-GameObject* Level1Factory::buildBox(Transform& transform, float mass) {
-	GameObject* box = new GameObject();
+GameObject* Level1Factory::buildBox(Scene* scene, Transform& transform, float mass) {
+	GameObject* box = new GameObject(scene);
 	Mesh* mesh = new Mesh();
 	mesh->setColor(1, 0, 0, 1);
 	box->addMesh(mesh);

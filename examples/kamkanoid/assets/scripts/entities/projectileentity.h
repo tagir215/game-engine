@@ -3,5 +3,5 @@
 
 class ProjectileEntity : public GameObject {
 public:	
-	ProjectileEntity();
+	ProjectileEntity(Scene* scene);
 };

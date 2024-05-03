@@ -11,28 +11,27 @@
 
 Level_1::Level_1(float ANIMATION_TIME_FRAME) : Scene(ANIMATION_TIME_FRAME)
 {
-	camera = std::make_unique<Camera>(0, 640, 0, 480);
+	camera = std::make_unique<Camera>(this,0, 640, 0, 480);
 	camera->addTransform(Transform(glm::vec3(-320.0f, -240.0f, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
 
 
 
-	CharacterEntity* character = new CharacterEntity();
+	CharacterEntity* character = new CharacterEntity(this);
 	gameObjects.push_back(character);
 
-	ProjectileEntity* projectile = new ProjectileEntity();
+	ProjectileEntity* projectile = new ProjectileEntity(this);
 	gameObjects.push_back(projectile);
 
-	WallEntity* wallR = new WallEntity(Transform(glm::vec3(300,0,0),glm::vec3(0,0,0),glm::vec3(10,460,1)));
+	WallEntity* wallR = new WallEntity(this,Transform(glm::vec3(300+15,0,0),glm::vec3(0,0,0),glm::vec3(30,480,1)));
 	gameObjects.push_back(wallR);
-	WallEntity* wallL = new WallEntity(Transform(glm::vec3(-300,0,0),glm::vec3(0,0,0),glm::vec3(10,460,1)));
+	WallEntity* wallL = new WallEntity(this,Transform(glm::vec3(-300-15,0,0),glm::vec3(0,0,0),glm::vec3(30,480,1)));
 	gameObjects.push_back(wallL);
-	WallEntity* wallT = new WallEntity(Transform(glm::vec3(0,230,0),glm::vec3(0,0,0),glm::vec3(600,10,1)));
+	WallEntity* wallT = new WallEntity(this,Transform(glm::vec3(0,230,0),glm::vec3(0,0,0),glm::vec3(600,30,1)));
 	gameObjects.push_back(wallT);
 
 	createBricks();
 
 	systems.push_back(new CharacterSystem(gameObjects));
-	systems.push_back(new GravitySystem(gameObjects));
 	systems.push_back(new CollisionSystem(gameObjects));
 	systems.push_back(new MovementSystem(gameObjects));
 }
@@ -57,7 +56,7 @@ void Level_1::createBricks()
 				glm::vec3(0, 0, 0), 
 				glm::vec3(WIDTH, HEIGHT, 1)
 			);
-			BrickEntity* brick = new BrickEntity(t);
+			BrickEntity* brick = new BrickEntity(this,t);
 			gameObjects.push_back(brick);
 		}
 	}

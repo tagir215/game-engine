@@ -3,5 +3,5 @@
 
 class BrickEntity : public GameObject {
 public:
-	BrickEntity(Transform transform);
+	BrickEntity(Scene* scene, Transform transform);
 };
