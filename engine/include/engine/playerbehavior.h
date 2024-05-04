@@ -1,6 +1,7 @@
 #pragma once
 #include "systembase.h"
 #include "transformer.h"
+#include "inputmanager.h"
 
 class PlayerBehavior : public SystemBase {
 public:
@@ -11,6 +12,7 @@ private:
 	const float ANIMATION_FRAME_TIME;
 	float cumilatedTime = 0;
 	const float	WALKING_SPEED = 200.0f;
+	InputManager inputManager = InputManager::getInstance();
 
 	Transformer transformer;
 	void updateAnimation(GameObject* object, float deltaTime);

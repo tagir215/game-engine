@@ -4,4 +4,5 @@
 class ProjectileEntity : public GameObject {
 public:	
 	ProjectileEntity(Scene* scene);
+	void beginPlay() override;
 };

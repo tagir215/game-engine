@@ -7,6 +7,8 @@
 #include "velocity.h"
 #include "shaderinfo.h"
 #include "inputcomponent.h"
+#include <set>
+
 class Scene;
 
 class GameObject {
@@ -70,6 +72,11 @@ public:
         return id;
     }
 
+    std::set<std::string>& getTags() {
+        return tags;
+    }
+
+
 private:
     int id;
     static int nextId;
@@ -81,4 +88,6 @@ private:
     Velocity velocity;
     ShaderInfo shaderInfo;
     Scene* parentScene;
+    std::set<std::string>tags;
+
 };

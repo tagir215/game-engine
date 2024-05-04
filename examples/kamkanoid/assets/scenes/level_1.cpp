@@ -22,11 +22,11 @@ Level_1::Level_1(float ANIMATION_TIME_FRAME) : Scene(ANIMATION_TIME_FRAME)
 	ProjectileEntity* projectile = new ProjectileEntity(this);
 	gameObjects.push_back(projectile);
 
-	WallEntity* wallR = new WallEntity(this,Transform(glm::vec3(300+15,0,0),glm::vec3(0,0,0),glm::vec3(30,480,1)));
+	WallEntity* wallR = new WallEntity(this,Transform(glm::vec3(250 + 10,0,0),glm::vec3(0,0,0),glm::vec3(15,460,1)));
 	gameObjects.push_back(wallR);
-	WallEntity* wallL = new WallEntity(this,Transform(glm::vec3(-300-15,0,0),glm::vec3(0,0,0),glm::vec3(30,480,1)));
+	WallEntity* wallL = new WallEntity(this,Transform(glm::vec3(-250 - 10,0,0),glm::vec3(0,0,0),glm::vec3(15,460,1)));
 	gameObjects.push_back(wallL);
-	WallEntity* wallT = new WallEntity(this,Transform(glm::vec3(0,230,0),glm::vec3(0,0,0),glm::vec3(600,30,1)));
+	WallEntity* wallT = new WallEntity(this,Transform(glm::vec3(0,220,0),glm::vec3(0,0,0),glm::vec3(510,15,1)));
 	gameObjects.push_back(wallT);
 
 	createBricks();
@@ -42,12 +42,21 @@ void Level_1::createBricks()
 	const int HEIGHT = 18;
 	const int GAP_X = 5;
 	const int GAP_Y = 5;
-	const int START_X = -270;
+	const int START_X = -250 + 25;
 	const int START_Y = 50;
 
-	const int WIDTH_GAME_SCREEN = 600;
+	const int WIDTH_GAME_SCREEN = 500;
 	const int COUNT_X = WIDTH_GAME_SCREEN / (WIDTH + GAP_X);
-	const int COUNT_Y = 4;
+	const int COUNT_Y = 6;
+
+	glm::vec3 rowColors[] = {
+		glm::vec3(0,255,0),
+		glm::vec3(255,0,255),
+		glm::vec3(0,112,255),
+		glm::vec3(255,255,0),
+		glm::vec3(255,0,0),
+		glm::vec3(157,157,157),
+	};
 
 	for (int x = 0; x < COUNT_X; ++x) {
 		for (int y = 0; y < COUNT_Y; ++y) {
@@ -56,7 +65,7 @@ void Level_1::createBricks()
 				glm::vec3(0, 0, 0), 
 				glm::vec3(WIDTH, HEIGHT, 1)
 			);
-			BrickEntity* brick = new BrickEntity(this,t);
+			BrickEntity* brick = new BrickEntity(this,t,rowColors[y]);
 			gameObjects.push_back(brick);
 		}
 	}

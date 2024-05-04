@@ -30,6 +30,15 @@ public:
 		}
 	}
 
+	void deleteGameObject(GameObject* gameObject) {
+		for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it) {
+			if (*it == gameObject) {
+				gameObjects.erase(it);
+				return;
+			}
+		}
+	}
+
 protected:
 	std::vector<GameObject*>gameObjects;
 	std::unique_ptr<Camera> camera;

@@ -6,7 +6,7 @@
 
 class CollisionSystem : public SystemBase {
 public:
-	CollisionSystem(std::vector<GameObject*>gameObjects);
+	CollisionSystem(std::vector<GameObject*>& gameObjects);
 	void onUpdate(float deltaTime) override;
 private:
 	Transformer transformer;

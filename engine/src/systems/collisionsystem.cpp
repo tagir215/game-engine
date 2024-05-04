@@ -10,7 +10,7 @@
 #include <sstream>
 #include <iostream>
 
-CollisionSystem::CollisionSystem(std::vector<GameObject*>gameObjects) : SystemBase(gameObjects) {
+CollisionSystem::CollisionSystem(std::vector<GameObject*>& gameObjects) : SystemBase(gameObjects) {
 }
 const float PI = 3.14159265358979323846f;
 
@@ -437,7 +437,7 @@ void CollisionSystem::onUpdate(float deltaTime) {
 				setForces(collision);
 				memo[smaller][bigger] = true;
 				gameObjects[i]->getPhysicsComponent().onHitEvent.broadcast(gameObjects[i],gameObjects[j]);
-				gameObjects[j]->getPhysicsComponent().onHitEvent.broadcast(gameObjects[j],gameObjects[j]);
+				gameObjects[j]->getPhysicsComponent().onHitEvent.broadcast(gameObjects[j],gameObjects[i]);
 			}
 		}
 	}
