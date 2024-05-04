@@ -5,6 +5,7 @@
 #include <memory>
 #include "../assets/shaders/ShaderSource.h"
 #include <unordered_map>
+#include "collisionsystem.h"
 
 class Scene {
 public:
@@ -13,10 +14,11 @@ public:
 	void render();
 	void update(float deltaTime);
 
-	SystemBase* getSystemByType(const std::type_info& type) {
+	template<typename T>
+	T* getSystemByType() {
 		for (SystemBase* system : systems) {
-			if (typeid(*system) == type) {
-				return system;
+			if (typeid(*system) == typeid(T)) {
+				return dynamic_cast<T*>(system);
 			}
 		}
 		return nullptr;

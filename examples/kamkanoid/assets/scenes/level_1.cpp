@@ -30,10 +30,10 @@ Level_1::Level_1(float ANIMATION_TIME_FRAME) : Scene(ANIMATION_TIME_FRAME)
 	gameObjects.push_back(wallT);
 
 	createBricks();
-
 	systems.push_back(new CharacterSystem(gameObjects));
 	systems.push_back(new CollisionSystem(gameObjects));
 	systems.push_back(new MovementSystem(gameObjects));
+
 }
 
 void Level_1::createBricks()

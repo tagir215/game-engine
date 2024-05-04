@@ -36,6 +36,11 @@ public:
         this->inputComponent = inputComponent;
     }
 
+    /* 
+    * called at the start of the game 
+    */
+    virtual void beginPlay();
+
     Scene* getParent() {
         return parentScene;
     }

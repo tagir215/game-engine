@@ -15,3 +15,7 @@ GameObject::~GameObject() {
     delete inputComponent;
 }
 
+void GameObject::beginPlay()
+{
+}
+

@@ -11,7 +11,6 @@
 #include <iostream>
 
 CollisionSystem::CollisionSystem(std::vector<GameObject*>gameObjects) : SystemBase(gameObjects) {
-			
 }
 const float PI = 3.14159265358979323846f;
 
