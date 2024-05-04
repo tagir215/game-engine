@@ -24,6 +24,12 @@ public:
 		return nullptr;
 	}
 
+	void start() {
+		for (GameObject* o : gameObjects) {
+			o->beginPlay();
+		}
+	}
+
 protected:
 	std::vector<GameObject*>gameObjects;
 	std::unique_ptr<Camera> camera;

@@ -221,7 +221,7 @@ void setVelocities(CollisionObjectInfo& collisionObjectInfo) {
 		return;
 	}
 
-	const float ENERGY_RETENTION = collisionObjectInfo.obj->getPhysics().elasticity;
+	const float ENERGY_RETENTION = collisionObjectInfo.obj->getPhysicsComponent().elasticity;
 	glm::vec3 collisionToCentroid = collisionObjectInfo.collisionPoint - collisionObjectInfo.centroid;
 	float projectionLength = glm::dot(collisionToCentroid, collisionObjectInfo.velocityAfterCollision) / glm::length(collisionObjectInfo.velocityAfterCollision);
 	glm::vec3 projection = glm::normalize(collisionObjectInfo.velocityAfterCollision) * projectionLength;
@@ -233,7 +233,7 @@ void setVelocities(CollisionObjectInfo& collisionObjectInfo) {
 	float a = glm::length(projection);
 	float forceOffset = std::sqrt(c * c - a * a) * offsetDirection;
 
-	if (collisionObjectInfo.rotates && collisionObjectInfo.obj->getPhysics().rotates) {
+	if (collisionObjectInfo.rotates && collisionObjectInfo.obj->getPhysicsComponent().rotates) {
 		float r = glm::length(collisionToCentroid);
 		float rot = (glm::length(collisionObjectInfo.velocityAfterCollision) / forceOffset) * ENERGY_RETENTION;
 		collisionObjectInfo.obj->getVelocity().rotation.z = rot;
@@ -345,8 +345,8 @@ void setForces(CollisionInfo& collisionInfo) {
 	glm::vec3 velocityRotationAddedB = combineWithRotation(objB, collisionInfo, collisionPointCentroid);
 
 	SpeedsAfterCollision speedsAfterCollision = calculateCollisionVelocities(
-		objA->getPhysics().mass,
-		objB->getPhysics().mass,
+		objA->getPhysicsComponent().mass,
+		objB->getPhysicsComponent().mass,
 		velocityRotationAddedA,
 		velocityRotationAddedB,
 		collisionInfo.collisionNormal
@@ -361,7 +361,7 @@ void setForces(CollisionInfo& collisionInfo) {
 	if (glm::length(directionsAfterCollision.vecB) > 0)
 		collisionVecB = glm::normalize(directionsAfterCollision.vecB) * speedsAfterCollision.v2;
 
-	float totalFriction = objA->getPhysics().friction * objB->getPhysics().friction;
+	float totalFriction = objA->getPhysicsComponent().friction * objB->getPhysicsComponent().friction;
 
 	bool rotates = false;
 	if (collisionInfo.collisionPoints.size() < 2) {
@@ -397,7 +397,7 @@ void setForces(CollisionInfo& collisionInfo) {
 std::unordered_map<int, std::vector<glm::vec3>> CollisionSystem::transformVertices() {
 	std::unordered_map<int, std::vector<glm::vec3>>map;
 	for (GameObject* object : gameObjects) {
-		if (!object->getPhysics().collidable) continue;
+		if (!object->getPhysicsComponent().collidable) continue;
 		map[object->getId()] = std::vector<glm::vec3>();
 		glm::mat4 modelMatrix = transformer.getModelMatrix(object->getTransform());
 		std::array<float, 18>vertices = object->getMesh()->getVertices();
@@ -424,9 +424,9 @@ void CollisionSystem::onUpdate(float deltaTime) {
 	std::vector<std::vector<bool>>memo(gameObjects.size(), std::vector<bool>(gameObjects.size()));
 	std::unordered_map<int, std::vector<glm::vec3>>map = transformVertices();
 	for (int i = 0; i < gameObjects.size(); ++i) {
-		if (!gameObjects[i]->getPhysics().collidable) continue;
+		if (!gameObjects[i]->getPhysicsComponent().collidable) continue;
 		for (int j = 0; j < gameObjects.size(); ++j) {
-			if (!gameObjects[j]->getPhysics().collidable) continue;
+			if (!gameObjects[j]->getPhysicsComponent().collidable) continue;
 			if (i == j) continue;
 			if (glm::length(gameObjects[i]->getVelocity().linearVelocity) == 0 
 				&& glm::length(gameObjects[j]->getVelocity().linearVelocity) == 0) continue;
@@ -436,7 +436,8 @@ void CollisionSystem::onUpdate(float deltaTime) {
 			if (collision.collides && !memo[smaller][bigger]) {
 				setForces(collision);
 				memo[smaller][bigger] = true;
-				onHitEvent.broadcast(gameObjects[i],gameObjects[j]);
+				gameObjects[i]->getPhysicsComponent().onHitEvent.broadcast(gameObjects[i],gameObjects[j]);
+				gameObjects[j]->getPhysicsComponent().onHitEvent.broadcast(gameObjects[j],gameObjects[j]);
 			}
 		}
 	}

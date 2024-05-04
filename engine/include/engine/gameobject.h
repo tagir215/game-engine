@@ -23,7 +23,7 @@ public:
     void addMesh(Mesh* mesh) {
         this->mesh = mesh;
     }
-    void addPhysics(Physics mass) {
+    void addPhysicsComponent(PhysicsComponent mass) {
         this->physics = mass;
     }
     void addVelocity(Velocity velocity) {
@@ -53,7 +53,7 @@ public:
     Mesh* getMesh() {
         return mesh;
     }
-    Physics& getPhysics() {
+    PhysicsComponent& getPhysicsComponent() {
         return physics;
     }
     Velocity& getVelocity() {
@@ -77,7 +77,7 @@ private:
     Mesh* mesh = nullptr;
     InputComponent* inputComponent = nullptr;
     Transform transform;
-    Physics physics;
+    PhysicsComponent physics;
     Velocity velocity;
     ShaderInfo shaderInfo;
     Scene* parentScene;

@@ -5,6 +5,7 @@ class Kamkanoid : public engine::Application{
 public:
 	Kamkanoid() : engine::Application(800, 600, "Kamkanoid") {
 		Level_1* level = new Level_1(0.1f);
+		setCurrentScene(level);
 		scenes.push_back(level);
 	}
 

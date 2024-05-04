@@ -10,6 +10,6 @@ ProjectileEntity::ProjectileEntity(Scene* scene) : GameObject(scene)
 	addMesh(mesh);
 	addVelocity(Velocity(-10, 50, 0));
 	addTransform(Transform(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(WIDTH, HEIGHT, 1)));
-	addPhysics(Physics(1, true, 1, true, 0, WIDTH, HEIGHT, false));
+	addPhysicsComponent(PhysicsComponent(1, true, 1, true, 0, WIDTH, HEIGHT, false));
 	addShaderInfo(ShaderInfo(1));
 }

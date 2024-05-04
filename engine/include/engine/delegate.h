@@ -10,12 +10,6 @@ class GameObject;
 template<typename functionType>
 class Delegate {
 public:
-	void thehell() {
-		for (int i = 0; i < 100; ++i) {
-			what.push_back(i);
-		}
-	}
-
 	void addListener(GameObject* gameObject, std::function<functionType> callback) {
 		if (gameObject != nullptr) {
 			invocationList[gameObject] = callback;
@@ -32,6 +26,5 @@ public:
 
 private:
 	std::map<GameObject*, std::function<functionType>> invocationList;
-	std::vector<int>what;
 };
 
