@@ -4,7 +4,8 @@
 void PlayerBehavior::onUpdate(float deltaTime) {
 
 	for (GameObject* o : gameObjects) {
-		if (o->getId() == 1) {
+		if (o->getInputComponent() != nullptr) {
+			inputManager = InputManager::getInstance();
 			updateAnimation(o,deltaTime);
 			updatePlayerPosition(o,deltaTime);
 		}

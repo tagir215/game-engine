@@ -1,12 +1,12 @@
 #include "projectileentity.h"
-#include "engine/mesh.h"
 #include "engine/scene.h"
+#include "../assets/basicShapes/plane.h"
 
 ProjectileEntity::ProjectileEntity(Scene* scene) : GameObject(scene)
 {
 	const float WIDTH = 15;
 	const float HEIGHT = 15;
-	Mesh* mesh = new Mesh();
+	Plane* mesh = new Plane();
 	mesh->setColor(1, 1, 1, 1);
 	addMesh(mesh);
 	addVelocity(Velocity(0, 200, 0));

@@ -14,7 +14,7 @@ public:
 		this->keyframes = keyframes;
 	}
 	void nextFrame();
-	std::array<float, 12>getTextureCoords();
+	std::vector<float>getTextureCoords();
 
 private:
 	GLuint texId;  

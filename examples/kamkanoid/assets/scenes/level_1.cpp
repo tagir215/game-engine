@@ -22,11 +22,11 @@ Level_1::Level_1(float ANIMATION_TIME_FRAME) : Scene(ANIMATION_TIME_FRAME)
 	ProjectileEntity* projectile = new ProjectileEntity(this);
 	gameObjects.push_back(projectile);
 
-	WallEntity* wallR = new WallEntity(this,Transform(glm::vec3(250 + 10,0,0),glm::vec3(0,0,0),glm::vec3(15,460,1)));
+	WallEntity* wallR = new WallEntity(this,Transform(glm::vec3(250 + 10,0,0),glm::vec3(0,0,0),glm::vec3(15,470,1)));
 	gameObjects.push_back(wallR);
-	WallEntity* wallL = new WallEntity(this,Transform(glm::vec3(-250 - 10,0,0),glm::vec3(0,0,0),glm::vec3(15,460,1)));
+	WallEntity* wallL = new WallEntity(this,Transform(glm::vec3(-250 - 10,0,0),glm::vec3(0,0,0),glm::vec3(15,470,1)));
 	gameObjects.push_back(wallL);
-	WallEntity* wallT = new WallEntity(this,Transform(glm::vec3(0,220,0),glm::vec3(0,0,0),glm::vec3(510,15,1)));
+	WallEntity* wallT = new WallEntity(this,Transform(glm::vec3(0,230,0),glm::vec3(0,0,0),glm::vec3(510,15,1)));
 	gameObjects.push_back(wallT);
 
 	createBricks();

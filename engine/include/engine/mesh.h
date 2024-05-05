@@ -1,35 +1,36 @@
 #pragma once
 #include <glad/gl.h>
-#include <array>
 #include <glm/glm.hpp> 
 #include <vector>
 
-class Mesh {
+class StaticMesh {
 public:
-	Mesh();
+	StaticMesh();
 
-	void setColor(float r, float g, float b, float w);
 
 	GLuint getVao() {
 		return vao;
 	}
 
+	void setColor(float r, float g, float b, float w);
 	float* getColor() {
 		return color;
 	}
 
-	std::array<float, 18>getVertices() {
+	std::vector<float> getVertices() {
 		return vertices;
 	}
 
-	void updateTextureBuffer(std::array<float, 12>coords);
+	void updateTextureBuffer(std::vector<float> coords);
 	
+	void initVertexArrays();
 
-private:
-	float color[4];
+
+protected:
+	float color[4] = {1,1,1,1};
 	GLuint vao;
 	GLuint positionsVbo;
 	GLuint textureVbo;
-	std::array<float, 18>vertices;
-	std::array<float, 12>texCoords;
+	std::vector<float> vertices;
+	std::vector<float> texCoords;
 };

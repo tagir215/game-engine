@@ -400,7 +400,7 @@ std::unordered_map<int, std::vector<glm::vec3>> CollisionSystem::transformVertic
 		if (!object->getPhysicsComponent().collidable) continue;
 		map[object->getId()] = std::vector<glm::vec3>();
 		glm::mat4 modelMatrix = transformer.getModelMatrix(object->getTransform());
-		std::array<float, 18>vertices = object->getMesh()->getVertices();
+		std::vector<float>vertices = object->getMesh()->getVertices();
 		std::unordered_map<std::string, bool>memo;
 
 		for (int i = 0; i < vertices.size(); i += 3) {

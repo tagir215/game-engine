@@ -22,11 +22,11 @@ public:
     void addTransform(Transform transform) {
         this->transform = transform;
     }
-    void addMesh(Mesh* mesh) {
+    void addMesh(StaticMesh* mesh) {
         this->mesh = mesh;
     }
-    void addPhysicsComponent(PhysicsComponent mass) {
-        this->physics = mass;
+    void addPhysicsComponent(PhysicsComponent physics) {
+        this->physics = physics;
     }
     void addVelocity(Velocity velocity) {
         this->velocity = velocity;
@@ -52,7 +52,7 @@ public:
     Transform& getTransform() {
         return transform;
     }
-    Mesh* getMesh() {
+    StaticMesh* getMesh() {
         return mesh;
     }
     PhysicsComponent& getPhysicsComponent() {
@@ -81,7 +81,7 @@ private:
     int id;
     static int nextId;
     Texture* texture = nullptr;
-    Mesh* mesh = nullptr;
+    StaticMesh* mesh = nullptr;
     InputComponent* inputComponent = nullptr;
     Transform transform;
     PhysicsComponent physics;

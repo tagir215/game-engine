@@ -42,7 +42,7 @@ void Texture::nextFrame(){
 	}
 }
 
-std::array<float, 12> Texture::getTextureCoords(){
+std::vector<float> Texture::getTextureCoords(){
 	return keyframes->frames[currentFrame];
 }
 

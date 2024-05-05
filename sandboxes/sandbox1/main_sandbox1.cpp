@@ -5,6 +5,7 @@ class MyGame : public engine::Application {
 public:
 	MyGame() : engine::Application(800, 600, "Sandbox1") {
 		Level1* level = new Level1(0.1f);
+		setCurrentScene(level);
 		scenes.push_back(level);
 	}
 

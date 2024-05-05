@@ -1,9 +1,9 @@
 #include "characterentity.h"
-#include "engine/mesh.h"
+#include "../assets/basicShapes/plane.h"
 
 CharacterEntity::CharacterEntity(Scene* scene) : GameObject(scene)
 {
-	Mesh* mesh = new Mesh();
+	Plane* mesh = new Plane();
 	mesh->setColor(1, 1, 0, 1);
 	addMesh(mesh);
 
