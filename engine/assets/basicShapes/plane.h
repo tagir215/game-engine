@@ -1,5 +1,5 @@
 #pragma once
-#include "engine/mesh.h"
+#include "engine/components/mesh.h"
 
 class Plane : public StaticMesh {
 public:		

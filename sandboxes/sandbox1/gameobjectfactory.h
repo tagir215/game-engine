@@ -1,7 +1,7 @@
 #pragma once
-#include <engine/gameobject.h>
+#include "engine/core/gameobject.h"
 
 class GameObjectFactory {
 public:
-	virtual GameObject* buildGameObject(Scene* scene, Transform& transform) = 0;
+	virtual GameObject* buildGameObject(Scene* scene, TransformComponent& transform) = 0;
 };

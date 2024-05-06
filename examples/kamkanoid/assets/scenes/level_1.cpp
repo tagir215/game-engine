@@ -1,20 +1,22 @@
 #include "level_1.h"
-#include "engine/collisionsystem.h"
-#include "engine/gravitysystem.h"
-#include "engine/movementsystem.h"
+#include "engine/systems/collisionsystem.h"
+#include "engine/systems/gravitysystem.h"
+#include "engine/systems/movementsystem.h"
 #include "../scripts/systems/charactersystem.h"
 #include "../scripts/entities/characterentity.h"
 #include "../scripts/entities/projectileentity.h"
 #include "../scripts/entities/wallentity.h"
 #include "../scripts/entities/brickentity.h"
+#include "../scripts/entities/uientity.h"
 
 
-Level_1::Level_1(float ANIMATION_TIME_FRAME) : Scene(ANIMATION_TIME_FRAME)
+Level_1::Level_1() 
 {
 	camera = std::make_unique<Camera>(this,0, 640, 0, 480);
-	camera->addTransform(Transform(glm::vec3(-320.0f, -240.0f, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
+	camera->addTransformComponent(TransformComponent(glm::vec3(-320.0f, -240.0f, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
 
-
+	UiEntity* entity = new UiEntity(this);
+	gameObjects.push_back(entity);
 
 	CharacterEntity* character = new CharacterEntity(this);
 	gameObjects.push_back(character);
@@ -22,11 +24,11 @@ Level_1::Level_1(float ANIMATION_TIME_FRAME) : Scene(ANIMATION_TIME_FRAME)
 	ProjectileEntity* projectile = new ProjectileEntity(this);
 	gameObjects.push_back(projectile);
 
-	WallEntity* wallR = new WallEntity(this,Transform(glm::vec3(250 + 10,0,0),glm::vec3(0,0,0),glm::vec3(15,470,1)));
+	WallEntity* wallR = new WallEntity(this,TransformComponent(glm::vec3(250 + 10,0,0),glm::vec3(0,0,0),glm::vec3(15,470,1)));
 	gameObjects.push_back(wallR);
-	WallEntity* wallL = new WallEntity(this,Transform(glm::vec3(-250 - 10,0,0),glm::vec3(0,0,0),glm::vec3(15,470,1)));
+	WallEntity* wallL = new WallEntity(this,TransformComponent(glm::vec3(-250 - 10,0,0),glm::vec3(0,0,0),glm::vec3(15,470,1)));
 	gameObjects.push_back(wallL);
-	WallEntity* wallT = new WallEntity(this,Transform(glm::vec3(0,230,0),glm::vec3(0,0,0),glm::vec3(510,15,1)));
+	WallEntity* wallT = new WallEntity(this,TransformComponent(glm::vec3(0,230,0),glm::vec3(0,0,0),glm::vec3(510,15,1)));
 	gameObjects.push_back(wallT);
 
 	createBricks();
@@ -60,7 +62,7 @@ void Level_1::createBricks()
 
 	for (int x = 0; x < COUNT_X; ++x) {
 		for (int y = 0; y < COUNT_Y; ++y) {
-			Transform t(
+			TransformComponent t(
 				glm::vec3(START_X + (WIDTH + GAP_X) * x, START_Y + (HEIGHT + GAP_Y) * y, 0), 
 				glm::vec3(0, 0, 0), 
 				glm::vec3(WIDTH, HEIGHT, 1)

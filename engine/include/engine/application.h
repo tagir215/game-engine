@@ -4,7 +4,8 @@
 #include <stdio.h> 
 #include <vector>
 #include <iostream>
-#include "scene.h"
+#include "engine/application.h"
+#include "engine/core/scene.h"
 #include <string>
 
 namespace engine {

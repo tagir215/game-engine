@@ -1,4 +1,4 @@
-#include "../include/engine/inputmanager.h"
+#include "engine/input/inputmanager.h"
 
 void InputManager::update(int key, bool b) {
 	switch (key) {

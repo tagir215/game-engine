@@ -5,14 +5,14 @@ CharacterEntity::CharacterEntity(Scene* scene) : GameObject(scene)
 {
 	Plane* mesh = new Plane();
 	mesh->setColor(1, 1, 0, 1);
-	addMesh(mesh);
+	addMeshComponent(mesh);
 
-	Transform transform(glm::vec3(0,-200,0),glm::vec3(0,0,0),glm::vec3(100,20,1));
-	addTransform(transform);
+	TransformComponent transform(glm::vec3(0,-200,0),glm::vec3(0,0,0),glm::vec3(100,20,1));
+	addTransformComponent(transform);
 	addPhysicsComponent(PhysicsComponent(1000, true, 1, false, 0, 100, 20, false));
-	addShaderInfo(ShaderInfo(1));
+	addShaderComponent(ShaderComponent(1));
 	addInputComponent(new InputComponent());
-	addVelocity(Velocity(0,0,0));
+	addVelocityComponent(VelocityComponent(0,0,0));
 	getTags().insert("paddle");
 }
 

@@ -1,5 +1,5 @@
-#include "../include/engine/collisionsystem.h"
-#include "../include/engine/transformer.h"
+#include "engine/systems/collisionsystem.h"
+#include "engine/util/transformer.h"
 #include <cmath>
 #include <unordered_map>
 #include <glm/glm.hpp> 
@@ -160,8 +160,8 @@ CollisionInfo checkCollision(GameObject* object1, GameObject* object2
 	if (!collisionA.collides) return collisionA;
 	else if (!collisionB.collides) return collisionB;
 	else {
-		glm::vec3 mov1 = object1->getVelocity().linearVelocity;
-		glm::vec3 mov2 = object2->getVelocity().linearVelocity;
+		glm::vec3 mov1 = object1->getVelocityComponent().linearVelocity;
+		glm::vec3 mov2 = object2->getVelocityComponent().linearVelocity;
 
 		if (collisionA.collisionPoints.size() > collisionB.collisionPoints.size()) {
 			collisionA.objectA = object1;
@@ -202,12 +202,12 @@ void addEnergyLoss(glm::vec3& vec, const glm::vec3& normal, float retention) {
 
 void addCollisionEnergy(CollisionObjectInfo& collisionObjectInfo, float retention) {
 	glm::vec3 collisionDirection = glm::normalize(collisionObjectInfo.velocityAfterCollision);
-	glm::vec3 projectionVelocity = glm::dot(collisionObjectInfo.obj->getVelocity().linearVelocity, collisionDirection) * collisionDirection;
+	glm::vec3 projectionVelocity = glm::dot(collisionObjectInfo.obj->getVelocityComponent().linearVelocity, collisionDirection) * collisionDirection;
 	//float lengthOfToAddVector = std::abs(glm::length(projectionVelocity) - glm::length(collisionInfo2.velocity1));
 	float lengthOfToAddVector = glm::distance(projectionVelocity, collisionObjectInfo.velocityAfterCollision);
 	glm::vec3 toAddVector = collisionDirection * lengthOfToAddVector;
 	addEnergyLoss(toAddVector, collisionObjectInfo.normal, retention);
-	collisionObjectInfo.obj->getVelocity().linearVelocity += toAddVector;
+	collisionObjectInfo.obj->getVelocityComponent().linearVelocity += toAddVector;
 }
 
 bool haveOppositeSigns(float x, float y) {
@@ -236,8 +236,8 @@ void setVelocities(CollisionObjectInfo& collisionObjectInfo) {
 	if (collisionObjectInfo.rotates && collisionObjectInfo.obj->getPhysicsComponent().rotates) {
 		float r = glm::length(collisionToCentroid);
 		float rot = (glm::length(collisionObjectInfo.velocityAfterCollision) / forceOffset) * ENERGY_RETENTION;
-		collisionObjectInfo.obj->getVelocity().rotation.z = rot;
-		if (haveOppositeSigns(rot, collisionObjectInfo.obj->getVelocity().rotation.z)) {
+		collisionObjectInfo.obj->getVelocityComponent().rotation.z = rot;
+		if (haveOppositeSigns(rot, collisionObjectInfo.obj->getVelocityComponent().rotation.z)) {
 			addCollisionEnergy(collisionObjectInfo, ENERGY_RETENTION);
 		}
 	}
@@ -252,12 +252,12 @@ void setVelocities(CollisionObjectInfo& collisionObjectInfo) {
 */
 glm::vec3 combineWithRotation(GameObject* obj, CollisionInfo& collisionInfo, glm::vec3 collisionPointCentroid) {
 	glm::vec3 collisionPointAngleVector = glm::normalize(collisionInfo.centroidB - collisionPointCentroid);
-	glm::vec3 rotVec = calculateRotationVector(obj->getVelocity().rotation, collisionPointAngleVector);
+	glm::vec3 rotVec = calculateRotationVector(obj->getVelocityComponent().rotation, collisionPointAngleVector);
 
 	glm::vec3 normal = glm::normalize(collisionInfo.collisionNormal);
 	glm::vec3 rotVecProjection = glm::dot(normal, rotVec) * normal;
 
-	glm::vec3 velocityRotationAdded = rotVecProjection + obj->getVelocity().linearVelocity;
+	glm::vec3 velocityRotationAdded = rotVecProjection + obj->getVelocityComponent().linearVelocity;
 	return velocityRotationAdded;
 }
 
@@ -400,7 +400,7 @@ std::unordered_map<int, std::vector<glm::vec3>> CollisionSystem::transformVertic
 		if (!object->getPhysicsComponent().collidable) continue;
 		map[object->getId()] = std::vector<glm::vec3>();
 		glm::mat4 modelMatrix = transformer.getModelMatrix(object->getTransform());
-		std::vector<float>vertices = object->getMesh()->getVertices();
+		std::vector<float>vertices = object->getMeshComponent()->getVertices();
 		std::unordered_map<std::string, bool>memo;
 
 		for (int i = 0; i < vertices.size(); i += 3) {
@@ -428,8 +428,8 @@ void CollisionSystem::onUpdate(float deltaTime) {
 		for (int j = 0; j < gameObjects.size(); ++j) {
 			if (!gameObjects[j]->getPhysicsComponent().collidable) continue;
 			if (i == j) continue;
-			if (glm::length(gameObjects[i]->getVelocity().linearVelocity) == 0 
-				&& glm::length(gameObjects[j]->getVelocity().linearVelocity) == 0) continue;
+			if (glm::length(gameObjects[i]->getVelocityComponent().linearVelocity) == 0 
+				&& glm::length(gameObjects[j]->getVelocityComponent().linearVelocity) == 0) continue;
 			int smaller = i < j ? i : j;
 			int bigger = i > j ? i : j;
 			CollisionInfo collision = checkCollision(gameObjects[i], gameObjects[j], map);

@@ -1,5 +1,5 @@
 #pragma once
-#include "engine/gameobject.h"
+#include "engine/core/gameobject.h"
 
 class CharacterEntity : public GameObject {
 public:	

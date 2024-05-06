@@ -1,8 +1,5 @@
-#include "../include/engine/mesh.h"
+#include "engine/components/mesh.h"
 
-StaticMesh::StaticMesh() {
-
-}
 
 void StaticMesh::setColor(float r, float g, float b, float w){
 	color[0] = r;

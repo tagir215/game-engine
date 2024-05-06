@@ -1,9 +1,9 @@
 #pragma once
-#include "engine/scene.h"
+#include "engine/core/scene.h"
 
 class Level_1 : public Scene {
 public:
-	Level_1(float ANIMATION_TIME_FRAME);
+	Level_1();
 
 private:
 	void createBricks();

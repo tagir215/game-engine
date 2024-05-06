@@ -1,7 +1,7 @@
 #pragma once
-#include "engine/gameobject.h"
+#include "engine/core/gameobject.h"
 
 class WallEntity : public GameObject {
 public:
-	WallEntity(Scene* scene, Transform transform);
+	WallEntity(Scene* scene, TransformComponent transform);
 };

@@ -1,6 +1,6 @@
-#include "../include/engine/texture.h"
+#include "engine/graphics/texture.h"
 
-Texture::Texture(int width, int height, int nrChannels, const GLubyte* data) {
+TextureComponent::TextureComponent(int width, int height, int nrChannels, const GLubyte* data) {
 
 	glGenTextures(1, &texId);
 	glActiveTexture(GL_TEXTURE0);
@@ -27,22 +27,22 @@ Texture::Texture(int width, int height, int nrChannels, const GLubyte* data) {
 
 }
 
-Texture::~Texture() {
+TextureComponent::~TextureComponent() {
 	glDeleteTextures(1, &texId);
 }
 
-GLuint Texture::getTextureId() const {
+GLuint TextureComponent::getTextureId() const {
 	return texId;
 }
 
-void Texture::nextFrame(){
-	currentFrame++;
+void TextureComponent::nextFrame(){
+	++currentFrame;
 	if (currentFrame >= keyframes->frames.size()) {
 		currentFrame = 0;
 	}
 }
 
-std::vector<float> Texture::getTextureCoords(){
+std::vector<float> TextureComponent::getTextureCoords(){
 	return keyframes->frames[currentFrame];
 }
 

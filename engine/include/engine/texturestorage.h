@@ -1,20 +1,18 @@
 #pragma once
-#include "texture.h"
-#include "texturefactory.h"
+#include "engine/graphics/texturemanager.h"
 
 class TextureStorage{
 public:
-	Texture* WALK_BASIC;
+	TextureComponent* WALK_BASIC;
 	static TextureStorage& getInstance() {
 		static TextureStorage instance; 
 		return instance;
 	}
 private:
-	TextureFactory factory;
 	TextureStorage()  {
-		WALK_BASIC = factory.getWalkTexture();
+	//	WALK_BASIC = factory.getWalkTexture();
 	}
 	~TextureStorage() {
-		delete WALK_BASIC;
+	//	delete WALK_BASIC;
 	}
 };
