@@ -12,8 +12,6 @@
 #include "engine/core/object.h"
 #include <set>
 
-class Scene;
-
 /*
 * base class for all game objects
 */
@@ -26,7 +24,7 @@ public:
     void addTextureComponent(TextureComponent* texture) {
         this->texture = texture;
     }
-    void addTransformComponent(TransformComponent transform) {
+    void addTransformComponent(TransformComponent* transform) {
         this->transform = transform;
     }
     void addMeshComponent(StaticMesh* mesh) {
@@ -56,7 +54,7 @@ public:
     TextureComponent* getTextureComponent() {
         return texture;
     }
-    TransformComponent& getTransform() {
+    TransformComponent* getTransformComponent() {
         return transform;
     }
     StaticMesh* getMeshComponent() {
@@ -94,7 +92,7 @@ private:
     StaticMesh* mesh = nullptr;
     InputComponent* inputComponent = nullptr;
     TextComponent* textComponent = nullptr;
-    TransformComponent transform;
+    TransformComponent* transform = nullptr;
     PhysicsComponent physics;
     VelocityComponent velocity;
     ShaderComponent shaderComponent;

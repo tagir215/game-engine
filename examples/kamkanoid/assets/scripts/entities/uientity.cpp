@@ -8,5 +8,5 @@ UiEntity::UiEntity(Object* parent) : GameObject(parent)
 	TextComponent* text = new TextComponent(fontDataPath,fontImagePath);
 	text->setText("text is here");
 	addTextComponent(text);
-	addTransformComponent(TransformComponent(glm::vec3(0,0,0),glm::vec3(0,0,0),glm::vec3(0.3f,0.3f,0)));
+	addTransformComponent(new TransformComponent(glm::vec3(0,0,0),glm::vec3(0,0,0),glm::vec3(0.3f,0.3f,0)));
 }

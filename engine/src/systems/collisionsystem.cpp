@@ -153,8 +153,8 @@ CollisionInfo checkCollision(GameObject* object1, GameObject* object2
 	, std::unordered_map<int, std::vector<glm::vec3>>& transformedVertices) {
 	std::vector<glm::vec3>vertices1 = transformedVertices[object1->getId()];
 	std::vector<glm::vec3>vertices2 = transformedVertices[object2->getId()];
-	float rot1 = object1->getTransform().rotation.y;
-	float rot2 = object2->getTransform().rotation.y;
+	float rot1 = object1->getTransformComponent()->rotation.y;
+	float rot2 = object2->getTransformComponent()->rotation.y;
 	CollisionInfo collisionA = findSeparation(vertices1, vertices2, rot1);
 	CollisionInfo collisionB = findSeparation(vertices2, vertices1, rot2);
 	if (!collisionA.collides) return collisionA;
@@ -399,7 +399,7 @@ std::unordered_map<int, std::vector<glm::vec3>> CollisionSystem::transformVertic
 	for (GameObject* object : gameObjects) {
 		if (!object->getPhysicsComponent().collidable) continue;
 		map[object->getId()] = std::vector<glm::vec3>();
-		glm::mat4 modelMatrix = transformer.getModelMatrix(object->getTransform());
+		glm::mat4 modelMatrix = transformer.getModelMatrix(object->getTransformComponent());
 		std::vector<float>vertices = object->getMeshComponent()->getVertices();
 		std::unordered_map<std::string, bool>memo;
 

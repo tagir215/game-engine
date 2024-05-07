@@ -2,13 +2,13 @@
 #include "../../scenes/level_1.h"
 #include "../assets/basicShapes/plane.h"
 
-BrickEntity::BrickEntity(Object* parent, TransformComponent transform, glm::vec3 color) : GameObject(parent)
+BrickEntity::BrickEntity(Object* parent, TransformComponent* transform, glm::vec3 color) : GameObject(parent)
 {
 	addTransformComponent(transform);
 	Plane* mesh = new Plane();
 	mesh->setColor(color.x/255.0f, color.y/255.0f, color.z/255.0f, 1);
 	addMeshComponent(mesh);
-	addPhysicsComponent(PhysicsComponent(10000000000, true, 1, false, 0, transform.scale.x, transform.scale.y, false));
+	addPhysicsComponent(PhysicsComponent(10000000000, true, 1, false, 0, transform->scale.x, transform->scale.y, false));
 	addShaderComponent(ShaderComponent(1));
 	getTags().insert("brick");
 }

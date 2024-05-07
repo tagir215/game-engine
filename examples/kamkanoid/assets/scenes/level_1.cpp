@@ -13,7 +13,7 @@
 Level_1::Level_1() 
 {
 	camera = std::make_unique<Camera>(this,0, 640, 0, 480);
-	camera->addTransformComponent(TransformComponent(glm::vec3(-320.0f, -240.0f, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
+	camera->addTransformComponent(new TransformComponent(glm::vec3(-320.0f, -240.0f, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
 
 	UiEntity* entity = new UiEntity(this);
 	children.push_back(entity);
@@ -24,11 +24,11 @@ Level_1::Level_1()
 	ProjectileEntity* projectile = new ProjectileEntity(this);
 	children.push_back(projectile);
 
-	WallEntity* wallR = new WallEntity(this,TransformComponent(glm::vec3(250 + 10,0,0),glm::vec3(0,0,0),glm::vec3(15,470,1)));
+	WallEntity* wallR = new WallEntity(this, new TransformComponent(glm::vec3(250 + 10,0,0),glm::vec3(0,0,0),glm::vec3(15,470,1)));
 	children.push_back(wallR);
-	WallEntity* wallL = new WallEntity(this,TransformComponent(glm::vec3(-250 - 10,0,0),glm::vec3(0,0,0),glm::vec3(15,470,1)));
+	WallEntity* wallL = new WallEntity(this, new TransformComponent(glm::vec3(-250 - 10,0,0),glm::vec3(0,0,0),glm::vec3(15,470,1)));
 	children.push_back(wallL);
-	WallEntity* wallT = new WallEntity(this,TransformComponent(glm::vec3(0,230,0),glm::vec3(0,0,0),glm::vec3(510,15,1)));
+	WallEntity* wallT = new WallEntity(this, new TransformComponent(glm::vec3(0,230,0),glm::vec3(0,0,0),glm::vec3(510,15,1)));
 	children.push_back(wallT);
 
 	createBricks();
@@ -62,7 +62,7 @@ void Level_1::createBricks()
 
 	for (int x = 0; x < COUNT_X; ++x) {
 		for (int y = 0; y < COUNT_Y; ++y) {
-			TransformComponent t(
+			TransformComponent* t = new TransformComponent(
 				glm::vec3(START_X + (WIDTH + GAP_X) * x, START_Y + (HEIGHT + GAP_Y) * y, 0), 
 				glm::vec3(0, 0, 0), 
 				glm::vec3(WIDTH, HEIGHT, 1)

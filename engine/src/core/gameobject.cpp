@@ -21,6 +21,7 @@ GameObject::~GameObject() {
     delete mesh;
     delete inputComponent;
     delete textComponent;
+    delete transform;
 }
 
 void GameObject::beginPlay()

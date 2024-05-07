@@ -29,11 +29,11 @@ void PlayerBehavior::updateAnimation(GameObject* object, float deltaTime){
 void PlayerBehavior::updatePlayerPosition(GameObject* object,float deltaTime){
 	if (inputManager.isLeftPressed()) {
 		object->getVelocityComponent().linearVelocity.x = -WALKING_SPEED;
-		transformer.setRotation(object->getTransform(), 0, 180, 0);
+		transformer.setRotation(object->getTransformComponent(), 0, 180, 0);
 	}
 	else if (inputManager.isRightPressed()) {
 		object->getVelocityComponent().linearVelocity.x = WALKING_SPEED;
-		transformer.setRotation(object->getTransform(), 0, 0, 0);
+		transformer.setRotation(object->getTransformComponent(), 0, 0, 0);
 	}
 	else {
 		object->getVelocityComponent().linearVelocity.x = 0;

@@ -7,14 +7,14 @@ UiRenderer::UiRenderer(std::unordered_map<int, Shader*> shaderMap) : Renderer(sh
 
 void UiRenderer::render(std::vector<GameObject*>& gameObjects, Camera* camera)
 {
-	glm::mat4 vpMatrix = camera->getProjectionMatrix() * glm::inverse(transformer.getModelMatrix(camera->getTransform()));
+	glm::mat4 vpMatrix = camera->getProjectionMatrix() * glm::inverse(transformer.getModelMatrix(camera->getTransformComponent()));
 	for (GameObject* object : gameObjects) {
 		if (object->getTextComponent() == nullptr) {
 			continue;
 		}
 		Shader* shader = shaderMap[0];
 		shader->bind();
-		shader->setUniform("MVP", vpMatrix * transformer.getModelMatrix(object->getTransform()));
+		shader->setUniform("MVP", vpMatrix * transformer.getModelMatrix(object->getTransformComponent()));
 		shader->setUniform("texture0", 0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, object->getTextComponent()->getTextureComponent()->getTextureId());
