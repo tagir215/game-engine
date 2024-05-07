@@ -44,6 +44,7 @@ namespace engine {
 		}
 	}
 	int Application::run() {
+		currentScene->start();
 		m_running = true;
 
 		currentScene = scenes[0];

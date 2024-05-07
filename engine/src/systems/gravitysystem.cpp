@@ -1,12 +1,12 @@
-#include "../include/engine/gravitysystem.h"
+#include "engine/systems/gravitysystem.h"
 
 void GravitySystem::onUpdate(float deltaTime){
 	for (GameObject* object : gameObjects) {
-		if (!object->getPhysics().gravity) {
+		if (!object->getPhysicsComponent().gravity) {
 			continue;
 		}
-		float newVelocity = GRAVITY_CONSTANT_THING * deltaTime + object->getVelocity().linearVelocity.y;
-		float newerVelocity = newVelocity - object->getVelocity().linearVelocity.y;
-		object->getVelocity().linearVelocity.y += newerVelocity;
+		float newVelocity = GRAVITY_CONSTANT_THING * deltaTime + object->getVelocityComponent().linearVelocity.y;
+		float newerVelocity = newVelocity - object->getVelocityComponent().linearVelocity.y;
+		object->getVelocityComponent().linearVelocity.y += newerVelocity;
 	}
 }

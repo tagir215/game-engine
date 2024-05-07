@@ -1,4 +1,4 @@
-#include "../include/engine/inputcomponent.h"
+#include "engine/components/inputcomponent.h"
 
 InputComponent::InputComponent()
 {

@@ -4,7 +4,8 @@
 #include <stdio.h> 
 #include <vector>
 #include <iostream>
-#include "scene.h"
+#include "engine/application.h"
+#include "engine/core/scene.h"
 #include <string>
 
 namespace engine {
@@ -18,6 +19,12 @@ namespace engine {
 		int run();
 		void render(GLFWwindow* window);
 		void update(float deltaTime);
+		Scene* getCurrentScene() {
+			return currentScene;
+		}
+		void setCurrentScene(Scene* scene) {
+			currentScene = scene;
+		}
 
 	private:
 		const float ANIMATION_FRAME_TIME = 0.1f;

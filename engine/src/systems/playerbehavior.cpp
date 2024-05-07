@@ -1,10 +1,11 @@
-#include "../include/engine/playerbehavior.h"
+#include "engine/systems/playerbehavior.h"
 
 
 void PlayerBehavior::onUpdate(float deltaTime) {
 
 	for (GameObject* o : gameObjects) {
-		if (o->getId() == 1) {
+		if (o->getInputComponent() != nullptr) {
+			inputManager = InputManager::getInstance();
 			updateAnimation(o,deltaTime);
 			updatePlayerPosition(o,deltaTime);
 		}
@@ -20,26 +21,26 @@ void PlayerBehavior::updateAnimation(GameObject* object, float deltaTime){
 	}
 
 	if (animationFrame && (inputManager.isLeftPressed() || inputManager.isRightPressed())) {
-		object->getTexture()->nextFrame();
-		object->getMesh()->updateTextureBuffer(object->getTexture()->getTextureCoords());
+		object->getTextureComponent()->nextFrame();
+		object->getMeshComponent()->updateTextureBuffer(object->getTextureComponent()->getTextureCoords());
 	}
 }
 
 void PlayerBehavior::updatePlayerPosition(GameObject* object,float deltaTime){
 	if (inputManager.isLeftPressed()) {
-		object->getVelocity().linearVelocity.x = -WALKING_SPEED;
+		object->getVelocityComponent().linearVelocity.x = -WALKING_SPEED;
 		transformer.setRotation(object->getTransform(), 0, 180, 0);
 	}
 	else if (inputManager.isRightPressed()) {
-		object->getVelocity().linearVelocity.x = WALKING_SPEED;
+		object->getVelocityComponent().linearVelocity.x = WALKING_SPEED;
 		transformer.setRotation(object->getTransform(), 0, 0, 0);
 	}
 	else {
-		object->getVelocity().linearVelocity.x = 0;
+		object->getVelocityComponent().linearVelocity.x = 0;
 	}
 
 	if (inputManager.isSpacePressed()) {
-		object->getVelocity().linearVelocity.y = 500.0f;
+		object->getVelocityComponent().linearVelocity.y = 500.0f;
 	}
 }
 

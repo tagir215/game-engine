@@ -1,8 +1,7 @@
 #pragma once
-#include <engine/scene.h>
-#include "engine/collisionsystem.h"
+#include "engine/core/scene.h"
 
-class Level1 : public Scene{
+class Level1 : public Scene {
 public:	
-	Level1(float ANIMATION_FRAME_TIME);
+	Level1();
 };

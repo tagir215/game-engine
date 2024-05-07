@@ -1,7 +1,8 @@
 #pragma once
-#include "engine/gameobject.h"
+#include "engine/core/gameobject.h"
 
 class ProjectileEntity : public GameObject {
 public:	
 	ProjectileEntity(Scene* scene);
+	void beginPlay() override;
 };

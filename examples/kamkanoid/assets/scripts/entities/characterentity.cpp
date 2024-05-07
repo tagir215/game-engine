@@ -1,20 +1,22 @@
 #include "characterentity.h"
-#include "engine/mesh.h"
+#include "../assets/basicShapes/plane.h"
 
 CharacterEntity::CharacterEntity(Scene* scene) : GameObject(scene)
 {
-	Mesh* mesh = new Mesh();
+	Plane* mesh = new Plane();
 	mesh->setColor(1, 1, 0, 1);
-	addMesh(mesh);
+	addMeshComponent(mesh);
 
-	Transform transform(glm::vec3(0,-150,0),glm::vec3(0,0,0),glm::vec3(100,20,1));
-	addTransform(transform);
-
-	addPhysics(Physics(1000, true, 1, false, 0, 100, 20, false));
-
-	addShaderInfo(ShaderInfo(1));
+	TransformComponent transform(glm::vec3(0,-200,0),glm::vec3(0,0,0),glm::vec3(100,20,1));
+	addTransformComponent(transform);
+	addPhysicsComponent(PhysicsComponent(1000, true, 1, false, 0, 100, 20, false));
+	addShaderComponent(ShaderComponent(1));
 	addInputComponent(new InputComponent());
+	addVelocityComponent(VelocityComponent(0,0,0));
+	getTags().insert("paddle");
+}
 
-	addVelocity(Velocity(0,0,0));
+void CharacterEntity::beginPlay()
+{
 
 }
