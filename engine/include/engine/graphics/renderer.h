@@ -10,8 +10,8 @@
 
 class Renderer {
 public:
-	Renderer(std::unordered_map<int, Shader*>shaderMap) : shaderMap(shaderMap){}
-	virtual void render(std::vector<GameObject*>& gameObjects, Camera* camera) = 0;
+	Renderer(const std::unordered_map<int, Shader*>shaderMap) : shaderMap(shaderMap){}
+	virtual void render(const std::vector<GameObject*>& gameObjects, Camera* camera) = 0;
 protected:
 	std::unordered_map<int,Shader*>shaderMap;
 };

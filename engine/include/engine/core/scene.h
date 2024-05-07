@@ -7,8 +7,10 @@
 #include <unordered_map>
 #include "engine/systems/collisionsystem.h"
 #include "engine/graphics/uirenderer.h"
+#include "engine/core/gameobject.h"
+#include "engine/components/componentsorter.h"
 
-class Scene {
+class Scene : public Object<GameObject> {
 public:
 	Scene();
 	~Scene();
@@ -26,22 +28,13 @@ public:
 	}
 
 	void start() {
-		for (GameObject* o : gameObjects) {
+		for (GameObject* o : children) {
 			o->beginPlay();
 		}
 	}
 
-	void deleteGameObject(GameObject* gameObject) {
-		for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it) {
-			if (*it == gameObject) {
-				gameObjects.erase(it);
-				return;
-			}
-		}
-	}
 
 protected:
-	std::vector<GameObject*>gameObjects;
 	std::unique_ptr<Camera> camera;
 	std::vector<SystemBase*>systems;
 	std::unordered_map<int, Shader*>shaderMap;

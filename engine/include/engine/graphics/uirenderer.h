@@ -4,8 +4,8 @@
 
 class UiRenderer : Renderer {
 public:
-	UiRenderer(std::unordered_map<int, Shader*>shaderMap);
-	void render(std::vector<GameObject*>& gameObjects, Camera* camera) override;
+	UiRenderer(const std::unordered_map<int, Shader*>shaderMap);
+	void render(const std::vector<GameObject*>& gameObjects, Camera* camera) override;
 protected:
 	
 private:

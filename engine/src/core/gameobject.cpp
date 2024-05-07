@@ -3,17 +3,19 @@
 
 int GameObject::nextId = 0;
 
-GameObject::GameObject(Scene* parent) : parentScene(parent)
+GameObject::GameObject(Scene* scene) : scene(scene)
 {
 	id = nextId;
 	++nextId;
 }
+
 
 GameObject::~GameObject() {
     delete texture;
     delete mesh;
     delete inputComponent;
     delete textComponent;
+    delete transform;
 }
 
 void GameObject::beginPlay()

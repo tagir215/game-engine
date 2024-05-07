@@ -3,5 +3,5 @@
 
 class GameObjectFactory {
 public:
-	virtual GameObject* buildGameObject(Scene* scene, TransformComponent& transform) = 0;
+	virtual GameObject* buildGameObject(Object<GameObject>* scene, TransformComponent* transform) = 0;
 };

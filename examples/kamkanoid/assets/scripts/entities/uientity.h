@@ -5,4 +5,5 @@
 class UiEntity : public GameObject {
 public:		
 	UiEntity(Scene* scene);
+	void beginPlay() override;
 };

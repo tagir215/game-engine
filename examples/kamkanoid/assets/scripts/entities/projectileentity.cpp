@@ -5,27 +5,28 @@
 
 ProjectileEntity::ProjectileEntity(Scene* scene) : GameObject(scene)
 {
+}
+
+void ProjectileEntity::beginPlay()
+{
 	const float WIDTH = 15;
 	const float HEIGHT = 15;
 	Plane* mesh = new Plane();
 	mesh->setColor(1, 1, 1, 1);
 	addMeshComponent(mesh);
 	addVelocityComponent(VelocityComponent(0, 200, 0));
-	addTransformComponent(TransformComponent(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(WIDTH, HEIGHT, 1)));
+	addTransformComponent(new TransformComponent(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(WIDTH, HEIGHT, 1)));
 	addPhysicsComponent(PhysicsComponent(0, true, 1, true, 0, WIDTH, HEIGHT, false));
 	addShaderComponent(ShaderComponent(1));
 	getTags().insert("projectile");
-}
 
-void ProjectileEntity::beginPlay()
-{
 	getPhysicsComponent().onHitEvent.addListener(this, [](GameObject* thisObject, GameObject* otherObject) {
 		if (otherObject->getTags().find("paddle") != otherObject->getTags().end()) {
-			float distanceX = otherObject->getTransform().position.x - thisObject->getTransform().position.x;
+			float distanceX = otherObject->getTransformComponent()->position.x - thisObject->getTransformComponent()->position.x;
 			thisObject->getVelocityComponent().linearVelocity.x = distanceX * -2.5f;
 			}
 		if (otherObject->getTags().find("brick") != otherObject->getTags().end()) {
-			otherObject->getParent()->deleteGameObject(otherObject);
+			otherObject->getScene()->deleteChild(otherObject);
 		}
 		});
 
