@@ -3,7 +3,14 @@
 
 int GameObject::nextId = 0;
 
-GameObject::GameObject(Scene* parent) : parentScene(parent)
+GameObject::GameObject(Object* parent)  
+{
+	id = nextId;
+	++nextId;
+    this->parent = parent;
+}
+
+GameObject::GameObject()  
 {
 	id = nextId;
 	++nextId;

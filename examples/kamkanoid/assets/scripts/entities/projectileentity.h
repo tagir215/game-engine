@@ -3,6 +3,6 @@
 
 class ProjectileEntity : public GameObject {
 public:	
-	ProjectileEntity(Scene* scene);
+	ProjectileEntity(Object* parent);
 	void beginPlay() override;
 };

@@ -1,6 +1,6 @@
 #include "uientity.h"
 
-UiEntity::UiEntity(Scene* scene) : GameObject(scene)
+UiEntity::UiEntity(Object* parent) : GameObject(parent)
 {
 	FontSerializer fontSerializer;
 	std::string fontDataPath = "../../../../engine/assets/fonts/Monospaced.fnt";

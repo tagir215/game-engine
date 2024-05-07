@@ -3,7 +3,7 @@
 #include "engine/core/gameobject.h"
 #include "../assets/basicShapes/plane.h"
 
-ProjectileEntity::ProjectileEntity(Scene* scene) : GameObject(scene)
+ProjectileEntity::ProjectileEntity(Object* parent) : GameObject(parent)
 {
 	const float WIDTH = 15;
 	const float HEIGHT = 15;
@@ -25,7 +25,7 @@ void ProjectileEntity::beginPlay()
 			thisObject->getVelocityComponent().linearVelocity.x = distanceX * -2.5f;
 			}
 		if (otherObject->getTags().find("brick") != otherObject->getTags().end()) {
-			otherObject->getParent()->deleteGameObject(otherObject);
+			otherObject->getParent()->deleteChild(otherObject);
 		}
 		});
 

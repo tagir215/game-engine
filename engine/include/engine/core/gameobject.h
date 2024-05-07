@@ -9,6 +9,7 @@
 #include "engine/input/inputmanager.h"
 #include "engine/graphics/shaderinfo.h"
 #include "engine/components/textcomponent.h"
+#include "engine/core/object.h"
 #include <set>
 
 class Scene;
@@ -16,9 +17,10 @@ class Scene;
 /*
 * base class for all game objects
 */
-class GameObject {
+class GameObject : public Object<GameObject>{
 public:
-    GameObject(Scene* parent);
+    GameObject(Object* parent);
+    GameObject();
 	~GameObject();
 
     void addTextureComponent(TextureComponent* texture) {
@@ -51,9 +53,6 @@ public:
     */
     virtual void beginPlay();
 
-    Scene* getParent() {
-        return parentScene;
-    }
     TextureComponent* getTextureComponent() {
         return texture;
     }
@@ -99,7 +98,6 @@ private:
     PhysicsComponent physics;
     VelocityComponent velocity;
     ShaderComponent shaderComponent;
-    Scene* parentScene;
     std::set<std::string>tags;
 
 };

@@ -1,7 +1,7 @@
 #include "characterentity.h"
 #include "../assets/basicShapes/plane.h"
 
-CharacterEntity::CharacterEntity(Scene* scene) : GameObject(scene)
+CharacterEntity::CharacterEntity(Object* scene) : GameObject(parent)
 {
 	Plane* mesh = new Plane();
 	mesh->setColor(1, 1, 0, 1);

@@ -1,7 +1,7 @@
 #include "wallentity.h"
 #include "../assets/basicShapes/plane.h"
 
-WallEntity::WallEntity(Scene* scene, TransformComponent transform) : GameObject(scene)
+WallEntity::WallEntity(Object* parent, TransformComponent transform) : GameObject(parent)
 {
 	addTransformComponent(transform);
 

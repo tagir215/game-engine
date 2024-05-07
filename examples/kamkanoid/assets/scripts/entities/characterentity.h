@@ -3,6 +3,6 @@
 
 class CharacterEntity : public GameObject {
 public:	
-	CharacterEntity(Scene* scene);
+	CharacterEntity(Object* parent);
 	void beginPlay() override;
 };

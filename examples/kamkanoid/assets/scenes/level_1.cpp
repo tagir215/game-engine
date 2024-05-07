@@ -16,25 +16,25 @@ Level_1::Level_1()
 	camera->addTransformComponent(TransformComponent(glm::vec3(-320.0f, -240.0f, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
 
 	UiEntity* entity = new UiEntity(this);
-	gameObjects.push_back(entity);
+	children.push_back(entity);
 
 	CharacterEntity* character = new CharacterEntity(this);
-	gameObjects.push_back(character);
+	children.push_back(character);
 
 	ProjectileEntity* projectile = new ProjectileEntity(this);
-	gameObjects.push_back(projectile);
+	children.push_back(projectile);
 
 	WallEntity* wallR = new WallEntity(this,TransformComponent(glm::vec3(250 + 10,0,0),glm::vec3(0,0,0),glm::vec3(15,470,1)));
-	gameObjects.push_back(wallR);
+	children.push_back(wallR);
 	WallEntity* wallL = new WallEntity(this,TransformComponent(glm::vec3(-250 - 10,0,0),glm::vec3(0,0,0),glm::vec3(15,470,1)));
-	gameObjects.push_back(wallL);
+	children.push_back(wallL);
 	WallEntity* wallT = new WallEntity(this,TransformComponent(glm::vec3(0,230,0),glm::vec3(0,0,0),glm::vec3(510,15,1)));
-	gameObjects.push_back(wallT);
+	children.push_back(wallT);
 
 	createBricks();
-	systems.push_back(new CharacterSystem(gameObjects));
-	systems.push_back(new CollisionSystem(gameObjects));
-	systems.push_back(new MovementSystem(gameObjects));
+	systems.push_back(new CharacterSystem(children));
+	systems.push_back(new CollisionSystem(children));
+	systems.push_back(new MovementSystem(children));
 
 }
 
@@ -68,7 +68,7 @@ void Level_1::createBricks()
 				glm::vec3(WIDTH, HEIGHT, 1)
 			);
 			BrickEntity* brick = new BrickEntity(this,t,rowColors[y]);
-			gameObjects.push_back(brick);
+			children.push_back(brick);
 		}
 	}
 

@@ -3,5 +3,5 @@
 
 class WallEntity : public GameObject {
 public:
-	WallEntity(Scene* scene, TransformComponent transform);
+	WallEntity(Object* parent, TransformComponent transform);
 };

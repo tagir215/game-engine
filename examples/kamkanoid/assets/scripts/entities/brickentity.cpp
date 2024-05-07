@@ -2,7 +2,7 @@
 #include "../../scenes/level_1.h"
 #include "../assets/basicShapes/plane.h"
 
-BrickEntity::BrickEntity(Scene* scene, TransformComponent transform, glm::vec3 color) : GameObject(scene)
+BrickEntity::BrickEntity(Object* parent, TransformComponent transform, glm::vec3 color) : GameObject(parent)
 {
 	addTransformComponent(transform);
 	Plane* mesh = new Plane();
