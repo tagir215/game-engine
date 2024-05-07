@@ -2,6 +2,9 @@
 
 void MovementSystem::onUpdate(float deltaTime) {
 	for (GameObject* object : gameObjects) {
+		if (object->getTransformComponent() == nullptr) {
+			continue;
+		}
 		transformer.translate(
 			object->getTransformComponent(), 
 			object->getVelocityComponent().linearVelocity.x*deltaTime, 

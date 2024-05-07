@@ -7,7 +7,8 @@
 #include <unordered_map>
 #include "engine/systems/collisionsystem.h"
 #include "engine/graphics/uirenderer.h"
-#include "engine/core/object.h"
+#include "engine/core/gameobject.h"
+#include "engine/components/componentsorter.h"
 
 class Scene : public Object<GameObject> {
 public:
@@ -31,6 +32,7 @@ public:
 			o->beginPlay();
 		}
 	}
+
 
 protected:
 	std::unique_ptr<Camera> camera;

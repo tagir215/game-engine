@@ -2,6 +2,7 @@
 #include "engine/systems/collisionsystem.h"
 #include "engine/systems/gravitysystem.h"
 #include "engine/systems/movementsystem.h"
+#include "engine/components/componentsorter.h"
 #include "../scripts/systems/charactersystem.h"
 #include "../scripts/entities/characterentity.h"
 #include "../scripts/entities/projectileentity.h"
@@ -32,6 +33,7 @@ Level_1::Level_1()
 	children.push_back(wallT);
 
 	createBricks();
+	systems.push_back(new ComponentSorter(children));
 	systems.push_back(new CharacterSystem(children));
 	systems.push_back(new CollisionSystem(children));
 	systems.push_back(new MovementSystem(children));
@@ -51,6 +53,10 @@ void Level_1::createBricks()
 	const int COUNT_X = WIDTH_GAME_SCREEN / (WIDTH + GAP_X);
 	const int COUNT_Y = 6;
 
+	GameObject* container = new GameObject(this);
+	container->addTransformComponent(new TransformComponent(glm::vec3(-100, 0, 0)));
+	addChild(container);
+
 	glm::vec3 rowColors[] = {
 		glm::vec3(0,255,0),
 		glm::vec3(255,0,255),
@@ -68,7 +74,7 @@ void Level_1::createBricks()
 				glm::vec3(WIDTH, HEIGHT, 1)
 			);
 			BrickEntity* brick = new BrickEntity(this,t,rowColors[y]);
-			children.push_back(brick);
+			container->addChild(brick);
 		}
 	}
 

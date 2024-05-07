@@ -7,8 +7,8 @@
 
 class MeshRenderer : Renderer{
 public:
-	MeshRenderer(std::unordered_map<int,Shader*>shaderMap);
-	void render(std::vector<GameObject*>& gameObjects, Camera* camera) override;
+	MeshRenderer(const std::unordered_map<int,Shader*>shaderMap);
+	void render(const std::vector<GameObject*>& gameObjects, Camera* camera) override;
 private:
 	Transformer transformer;
 };

@@ -1,11 +1,11 @@
 #pragma once
 #include "engine/graphics/uirenderer.h"
 
-UiRenderer::UiRenderer(std::unordered_map<int, Shader*> shaderMap) : Renderer(shaderMap)
+UiRenderer::UiRenderer(const std::unordered_map<int, Shader*> shaderMap) : Renderer(shaderMap)
 {
 }
 
-void UiRenderer::render(std::vector<GameObject*>& gameObjects, Camera* camera)
+void UiRenderer::render(const std::vector<GameObject*>& gameObjects, Camera* camera)
 {
 	glm::mat4 vpMatrix = camera->getProjectionMatrix() * glm::inverse(transformer.getModelMatrix(camera->getTransformComponent()));
 	for (GameObject* object : gameObjects) {

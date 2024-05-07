@@ -3,6 +3,9 @@
 
 class BrickEntity : public GameObject {
 public:
-	BrickEntity(Object* parent, TransformComponent* transform, glm::vec3 color);
+	BrickEntity(Scene* scene, TransformComponent* transform, glm::vec3 color);
 	void beginPlay() override;
+private:
+	TransformComponent* transform;
+	glm::vec3 color;
 };

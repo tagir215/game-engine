@@ -3,7 +3,11 @@
 #include "engine/core/gameobject.h"
 #include "../assets/basicShapes/plane.h"
 
-ProjectileEntity::ProjectileEntity(Object* parent) : GameObject(parent)
+ProjectileEntity::ProjectileEntity(Scene* scene) : GameObject(scene)
+{
+}
+
+void ProjectileEntity::beginPlay()
 {
 	const float WIDTH = 15;
 	const float HEIGHT = 15;
@@ -15,17 +19,14 @@ ProjectileEntity::ProjectileEntity(Object* parent) : GameObject(parent)
 	addPhysicsComponent(PhysicsComponent(0, true, 1, true, 0, WIDTH, HEIGHT, false));
 	addShaderComponent(ShaderComponent(1));
 	getTags().insert("projectile");
-}
 
-void ProjectileEntity::beginPlay()
-{
 	getPhysicsComponent().onHitEvent.addListener(this, [](GameObject* thisObject, GameObject* otherObject) {
 		if (otherObject->getTags().find("paddle") != otherObject->getTags().end()) {
 			float distanceX = otherObject->getTransformComponent()->position.x - thisObject->getTransformComponent()->position.x;
 			thisObject->getVelocityComponent().linearVelocity.x = distanceX * -2.5f;
 			}
 		if (otherObject->getTags().find("brick") != otherObject->getTags().end()) {
-			otherObject->getParent()->deleteChild(otherObject);
+			otherObject->getScene()->deleteChild(otherObject);
 		}
 		});
 

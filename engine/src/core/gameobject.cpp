@@ -3,18 +3,12 @@
 
 int GameObject::nextId = 0;
 
-GameObject::GameObject(Object* parent)  
+GameObject::GameObject(Scene* scene) : scene(scene)
 {
 	id = nextId;
 	++nextId;
-    this->parent = parent;
 }
 
-GameObject::GameObject()  
-{
-	id = nextId;
-	++nextId;
-}
 
 GameObject::~GameObject() {
     delete texture;

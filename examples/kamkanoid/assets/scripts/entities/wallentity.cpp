@@ -1,10 +1,14 @@
 #include "wallentity.h"
 #include "../assets/basicShapes/plane.h"
 
-WallEntity::WallEntity(Object* parent, TransformComponent* transform) : GameObject(parent)
+WallEntity::WallEntity(Scene* scene, TransformComponent* transform) : GameObject(scene)
+{
+	this->transform = transform;
+}
+
+void WallEntity::beginPlay()
 {
 	addTransformComponent(transform);
-
 	Plane* mesh = new Plane();
 	mesh->setColor(0.4f, 0.4f, 0.4f, 1);
 	addMeshComponent(mesh);

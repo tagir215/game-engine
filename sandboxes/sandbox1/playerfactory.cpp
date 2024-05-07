@@ -7,7 +7,7 @@ PlayerFactory::PlayerFactory() {
 	
 }
 
-GameObject* PlayerFactory::buildGameObject(Object* scene,TransformComponent& transform) {
+GameObject* PlayerFactory::buildGameObject(Object* scene,TransformComponent* transform) {
 	TextureManager textureManager;
 	TextureComponent* texture = textureManager.loadTexture("walk-basic.png");
 	GameObject* player = new GameObject(scene);

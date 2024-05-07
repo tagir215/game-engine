@@ -7,15 +7,15 @@ public:
 	Object(){}
 	virtual ~Object(){}
 
-	Object* getParent() const {
+	ObjectType* getParent() const {
 		return parent;
 	}
 
 	void setParent(Object* parent) {
-		this->parent = parent;
+		this->parent = dynamic_cast<ObjectType*>(parent);
 	}
 
-	void addChild(ObjectType* child) {
+	virtual void addChild(ObjectType* child) {
 		dynamic_cast<Object*>(child)->setParent(this);
 		children.push_back(child);
 	}
@@ -33,7 +33,7 @@ public:
 	}
 
 protected:
-	Object* parent;
+	ObjectType* parent = nullptr;
 	std::vector<ObjectType*>children;
 };
 

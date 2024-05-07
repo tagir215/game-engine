@@ -4,5 +4,6 @@
 
 class UiEntity : public GameObject {
 public:		
-	UiEntity(Object* parent);
+	UiEntity(Scene* scene);
+	void beginPlay() override;
 };
