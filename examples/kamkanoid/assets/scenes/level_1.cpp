@@ -3,6 +3,7 @@
 #include "engine/systems/gravitysystem.h"
 #include "engine/systems/movementsystem.h"
 #include "engine/components/componentsorter.h"
+#include "../scripts/systems/scoresystem.h"
 #include "../scripts/systems/charactersystem.h"
 #include "../scripts/entities/characterentity.h"
 #include "../scripts/entities/projectileentity.h"
@@ -16,46 +17,105 @@ Level_1::Level_1()
 	camera = std::make_unique<Camera>(this,0, 640, 0, 480);
 	camera->addTransformComponent(new TransformComponent(glm::vec3(-320.0f, -240.0f, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
 
-	UiEntity* entity = new UiEntity(this);
-	children.push_back(entity);
+	createUI();
 
-	CharacterEntity* character = new CharacterEntity(this);
-	children.push_back(character);
+	newObject<CharacterEntity>();
+	newObject<ProjectileEntity>();
 
-	ProjectileEntity* projectile = new ProjectileEntity(this);
-	children.push_back(projectile);
+	GameObject* container = newObject<GameObject>();
+	container->addTransformComponent(new TransformComponent(glm::vec3(-50, -20, 0)));
 
-	WallEntity* wallR = new WallEntity(this, new TransformComponent(glm::vec3(250 + 10,0,0),glm::vec3(0,0,0),glm::vec3(15,470,1)));
-	children.push_back(wallR);
-	WallEntity* wallL = new WallEntity(this, new TransformComponent(glm::vec3(-250 - 10,0,0),glm::vec3(0,0,0),glm::vec3(15,470,1)));
-	children.push_back(wallL);
-	WallEntity* wallT = new WallEntity(this, new TransformComponent(glm::vec3(0,230,0),glm::vec3(0,0,0),glm::vec3(510,15,1)));
-	children.push_back(wallT);
+	const float X = 200;
+	const float G = 10;
+	const float H = 450;
 
-	createBricks();
-	systems.push_back(new ComponentSorter(children));
-	systems.push_back(new CharacterSystem(children));
-	systems.push_back(new CollisionSystem(children));
-	systems.push_back(new MovementSystem(children));
+	WallEntity* wallR = newObject<WallEntity>(new TransformComponent(glm::vec3(X,0, 0), glm::vec3(0, 0, 0), glm::vec3(G, H, 1)));
+	WallEntity* wallL = newObject<WallEntity>(new TransformComponent(glm::vec3(-X, 0, 0), glm::vec3(0, 0, 0), glm::vec3(G, H, 1)));
+	WallEntity* wallT = newObject<WallEntity>(new TransformComponent(glm::vec3(0, H/2, 0), glm::vec3(0, 0, 0), glm::vec3(X*2 + G, G, 1)));
+	container->addChild(wallR);
+	container->addChild(wallL);
+	container->addChild(wallT);
+
+	createBricks(container);
+
+	newSystem<ComponentSorter>();
+	newSystem<ScoreSystem>();
+	newSystem<CharacterSystem>();
+	newSystem<CollisionSystem>();
+	newSystem<MovementSystem>();
 
 }
 
-void Level_1::createBricks()
+void Level_1::createUI() 
 {
-	const int WIDTH = 40; 
-	const int HEIGHT = 18;
-	const int GAP_X = 5;
-	const int GAP_Y = 5;
-	const int START_X = -250 + 25;
+	GameObject* ui = newObject<GameObject>();
+	ui->addTransformComponent(new TransformComponent(glm::vec3(250, 100, 0)));
+	
+	FontSerializer fontSerializer;
+	std::string fontDataPath = "../../../../engine/assets/fonts/Monospaced.fnt";
+	std::string fontImagePath = "../../../../engine/assets/fonts/Monospaced.png";
+
+	GameObject* title = newObject<GameObject>();
+	title->addTransformComponent(new TransformComponent(glm::vec3(0,100,0),glm::vec3(0,0,0),glm::vec3(0.4f,0.4f,0)));
+	TextComponent* titleText = new TextComponent(fontDataPath,fontImagePath);
+	titleText->setText("KAMKANOID");
+	title->addTextComponent(titleText);
+	ui->addChild(title);
+
+	GameObject* score = newObject<GameObject>();
+	score->addTransformComponent(new TransformComponent(glm::vec3(0,20,0),glm::vec3(0,0,0),glm::vec3(0.3f,0.3f,0)));
+	TextComponent* scoreText = new TextComponent(fontDataPath,fontImagePath);
+	scoreText->setText("SCORE");
+	score->addTextComponent(scoreText);
+	ui->addChild(score);
+
+	GameObject* scoreNum = newObject<GameObject>();
+	scoreNum->addTransformComponent(new TransformComponent(glm::vec3(0,-0,0),glm::vec3(0,0,0),glm::vec3(0.3f,0.3f,0)));
+	TextComponent* scoreNumText = new TextComponent(fontDataPath,fontImagePath);
+	scoreNumText->setText("00");
+	scoreNum->addTextComponent(scoreNumText);
+	scoreNum->getTags().insert("score");
+	ui->addChild(scoreNum);
+
+	GameObject* highScore = newObject<GameObject>();
+	highScore->addTransformComponent(new TransformComponent(glm::vec3(0,-40,0),glm::vec3(0,0,0),glm::vec3(0.3f,0.3f,0)));
+	TextComponent* highScoreText = new TextComponent(fontDataPath,fontImagePath);
+	highScoreText->setText("HIGH SCORE");
+	highScore->addTextComponent(highScoreText);
+	ui->addChild(highScore);
+
+	GameObject* highScoreNum = newObject<GameObject>();
+	highScoreNum->addTransformComponent(new TransformComponent(glm::vec3(0,-60,0),glm::vec3(0,0,0),glm::vec3(0.3f,0.3f,0)));
+	TextComponent* highScoreNumText = new TextComponent(fontDataPath,fontImagePath);
+	highScoreNumText->setText("00");
+	highScoreNum->addTextComponent(highScoreNumText);
+	highScoreNum->getTags().insert("highscore");
+	ui->addChild(highScoreNum);
+
+
+	GameObject* logoLicense = newObject<GameObject>();
+	logoLicense->addTransformComponent(new TransformComponent(glm::vec3(0,-200,0),glm::vec3(0,0,0),glm::vec3(0.3f,0.3f,0)));
+	TextComponent* logoText = new TextComponent(fontDataPath,fontImagePath);
+	logoText->setText("KAMK");
+	logoLicense->addTextComponent(logoText);
+	ui->addChild(logoLicense);
+
+}
+
+void Level_1::createBricks(GameObject* container)
+{
+	const int G = 10;
+	const int WIDTH_GAME_SCREEN = 400;
+	const int COUNT_X = 13;
+	const int COUNT_Y = 6;
+	const int GAP_X = 3;
+	const int GAP_Y = GAP_X;
+	const int WIDTH = WIDTH_GAME_SCREEN / COUNT_X; 
+	const int HEIGHT = WIDTH/2;
+	const int START_X = WIDTH_GAME_SCREEN/-2 + WIDTH/2 + G/2; 
 	const int START_Y = 50;
 
-	const int WIDTH_GAME_SCREEN = 500;
-	const int COUNT_X = WIDTH_GAME_SCREEN / (WIDTH + GAP_X);
-	const int COUNT_Y = 6;
 
-	GameObject* container = new GameObject(this);
-	container->addTransformComponent(new TransformComponent(glm::vec3(-100, 0, 0)));
-	addChild(container);
 
 	glm::vec3 rowColors[] = {
 		glm::vec3(0,255,0),
@@ -69,11 +129,11 @@ void Level_1::createBricks()
 	for (int x = 0; x < COUNT_X; ++x) {
 		for (int y = 0; y < COUNT_Y; ++y) {
 			TransformComponent* t = new TransformComponent(
-				glm::vec3(START_X + (WIDTH + GAP_X) * x, START_Y + (HEIGHT + GAP_Y) * y, 0), 
+				glm::vec3(START_X + WIDTH * x, START_Y + HEIGHT * y, 0), 
 				glm::vec3(0, 0, 0), 
-				glm::vec3(WIDTH, HEIGHT, 1)
+				glm::vec3(WIDTH-GAP_X, HEIGHT-GAP_Y, 1)
 			);
-			BrickEntity* brick = new BrickEntity(this,t,rowColors[y]);
+			BrickEntity* brick = newObject<BrickEntity>(t, rowColors[y]);
 			container->addChild(brick);
 		}
 	}

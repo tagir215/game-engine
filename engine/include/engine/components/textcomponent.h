@@ -18,6 +18,7 @@ public:
 
 	void setText(std::string text) {
 		this->text = text;
+		delete mesh;
 		generateMesh();
 	}
 	void setColor(glm::vec3 color) {

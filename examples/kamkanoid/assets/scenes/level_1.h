@@ -6,5 +6,6 @@ public:
 	Level_1();
 
 private:
-	void createBricks();
+	void createBricks(GameObject* container);
+	void createUI();
 };

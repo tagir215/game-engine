@@ -79,6 +79,8 @@ void TextComponent::generateMesh()
 	std::vector<float>texCoords;
 	int currentX = 0;
 	int currentY = 0;
+	textWidth = 0;
+	textHeight = 0;
 
 	for (int i = 0; i < text.length(); ++i) {
 		FontCharacterInfo ci = charInfoMap[text[i]];

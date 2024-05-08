@@ -33,6 +33,20 @@ public:
 		}
 	}
 
+	template<typename T, typename... Args>
+	T* newObject(Args... args) {
+		static_assert(std::is_base_of<GameObject, T>::value, "T must be a subclass of GameObject");
+		T* newObject = new T(this, args...);
+		children.push_back(newObject);
+		return newObject;
+	}
+
+	template<typename T>
+	void newSystem() {
+		static_assert(std::is_base_of<SystemBase, T>::value, "T must be a subclass of SystemBase");
+		T* newSystem = new T(children);
+		systems.push_back(newSystem);
+	}
 
 protected:
 	std::unique_ptr<Camera> camera;
