@@ -22,10 +22,16 @@ public:
 	}
 
 	glm::vec3 absolutePosition() {
+		if (useCache) return absPos;
 		TransformComponent* componentParent = dynamic_cast<TransformComponent*>(parent);
 		if (componentParent != nullptr) {
-			return componentParent->absolutePosition() + position;
+			absPos = componentParent->absolutePosition() + position;
+			useCache = true;
+			return absPos;
 		}
 		return position;
 	}
+	bool useCache = false;
+private:
+	glm::vec3 absPos;
 };

@@ -3,6 +3,6 @@
 
 class Level1Factory : public LevelFactory {
 public:
-	virtual GameObject* buildGround(Object<GameObject>* scene, TransformComponent* transform, float mass) override;
-	virtual GameObject* buildBox(Object<GameObject>* scene, TransformComponent* transform, float mass) override;
+	virtual GameObject* buildGround(Scene* scene, TransformComponent* transform, float mass) override;
+	virtual GameObject* buildBox(Scene* scene, TransformComponent* transform, float mass) override;
 };

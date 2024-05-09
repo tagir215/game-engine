@@ -1,5 +1,9 @@
 1.2 - 12.4  noin. 100 tuntia miettien fysiikan lakeja ja ominaisuuksia
 30.4: 12h
-1.4 4h
+1.5 4h
 3.5 10h
 4.5 5h
+6.5 4h
+7.5 8h
+9.5 4h
+

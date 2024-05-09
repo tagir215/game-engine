@@ -16,11 +16,11 @@ void ProjectileEntity::beginPlay()
 	addMeshComponent(mesh);
 	addVelocityComponent(VelocityComponent(0, 200, 0));
 	addTransformComponent(new TransformComponent(glm::vec3(-50, 0, 0), glm::vec3(0, 0, 0), glm::vec3(WIDTH, HEIGHT, 1)));
-	addPhysicsComponent(PhysicsComponent(0, true, 1, true, 0, WIDTH, HEIGHT, false));
+	addPhysicsComponent(PhysicsComponent(0, true, 1, true, 0, glm::vec3(WIDTH,HEIGHT,1), false));
 	addShaderComponent(ShaderComponent(1));
 	getTags().insert("projectile");
 
-	getPhysicsComponent().onHitEvent.addListener(this, [=](GameObject* thisObject, GameObject* otherObject) {
+	getPhysicsComponent().onHitEvent.addListener(this, [&](GameObject* thisObject, GameObject* otherObject) {
 		if (otherObject->getTags().find("paddle") != otherObject->getTags().end()) {
 			float distanceX = otherObject->getTransformComponent()->position.x - thisObject->getTransformComponent()->position.x;
 			thisObject->getVelocityComponent().linearVelocity.x = distanceX * -2.5f;

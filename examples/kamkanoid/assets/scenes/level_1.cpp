@@ -49,7 +49,7 @@ Level_1::Level_1()
 void Level_1::createUI() 
 {
 	GameObject* ui = newObject<GameObject>();
-	ui->addTransformComponent(new TransformComponent(glm::vec3(250, 100, 0)));
+	ui->addTransformComponent(new TransformComponent(glm::vec3(240, 100, 0)));
 	
 	FontSerializer fontSerializer;
 	std::string fontDataPath = "../../../../engine/assets/fonts/Monospaced.fnt";

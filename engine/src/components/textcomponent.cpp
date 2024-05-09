@@ -86,8 +86,7 @@ void TextComponent::generateMesh()
 		FontCharacterInfo ci = charInfoMap[text[i]];
 		calculateCharPlaneVertices(vertices, texCoords, currentX, currentY, ci);
 		currentX += ci.xadvance;
-		if (i == text.length() - 1) {
-			textWidth += ci.width;
+		if (ci.height > textHeight) {
 			textHeight = ci.height;
 		}
 	}

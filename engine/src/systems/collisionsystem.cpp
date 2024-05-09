@@ -143,13 +143,27 @@ CollisionInfo findSeparation(std::vector<glm::vec3>& verticesA, std::vector<glm:
 }
 
 /*
+* check if there's collision using bounding volumes
+*/
+bool checkCollisionUsingBoundingVolumes(GameObject* object1, GameObject* object2) {
+	float distX = glm::abs(object1->getTransformComponent()->absolutePosition().x - object2->getTransformComponent()->absolutePosition().x);
+	float distY = glm::abs(object1->getTransformComponent()->absolutePosition().y - object2->getTransformComponent()->absolutePosition().y);
+	float xx = object1->getPhysicsComponent().boundingVolume.x / 2 + object2->getPhysicsComponent().boundingVolume.x / 2;
+	float yy = object1->getPhysicsComponent().boundingVolume.y / 2 + object2->getPhysicsComponent().boundingVolume.y / 2;
+	if (distX < xx && distY < yy) {
+		return true;
+	}
+	return false;
+}
+
+/*
 * checks if there's collision using the find separation method, and return a CollisionInfo object
 * with info about the collision. Calculates 2 separate CollisionInfo objects since in each CollisionInfo
 * struct there's objectA that represents the edges and objectB that represents the compared vertices.
 * CollisionInfo objects contain info about the separation value, and the collisionInfo object with greater
 * separation (that is still in collision, which means it can't be a positive value) is returned from the method
 */
-CollisionInfo checkCollision(GameObject* object1, GameObject* object2
+CollisionInfo checkCollisionUsingSAT(GameObject* object1, GameObject* object2
 	, std::unordered_map<int, std::vector<glm::vec3>>& transformedVertices) {
 	std::vector<glm::vec3>vertices1 = transformedVertices[object1->getId()];
 	std::vector<glm::vec3>vertices2 = transformedVertices[object2->getId()];
@@ -275,6 +289,7 @@ struct CollisionPoint {
 };
 
 /*
+* calculates Speeds of both objects after the collision
 * v1m1 + v2m2 = u1m1 + u2m2
 * v1 + u1 = v2 + u2
 * u2 = v1 + u1 - v2
@@ -299,6 +314,10 @@ SpeedsAfterCollision calculateCollisionVelocities(float m1, float m2, glm::vec3 
 	return SpeedsAfterCollision(glm::length(v1f), glm::length(v2f));
 }
 
+/*
+* calculates directions of each object after the collision
+* used to be more complex but i realized at some point that i can just add the -normal to the original velocity
+*/
 DirectionsAfterCollision calculateDirections(CollisionInfo& collisionInfo) {
 	//glm::vec3 vA = collisionInfo.objectA->getVelocity().velocity;
 	//glm::vec3 vB = collisionInfo.objectB->getVelocity().velocity;
@@ -323,8 +342,7 @@ DirectionsAfterCollision calculateDirections(CollisionInfo& collisionInfo) {
 /*
 * Changes objects Velocity components based on the type of collision.
 * objA is the collisionObject which's edge collides with the B
-* objB is the collisionObject that collides with the edge of the A (if there's more than 1 collisionPoint
-* objB technically also collides with an edge)
+* objB is the collisionObject that collides with the edge of the A (if there's more than 1 collisionPoint objB technically also collides with an edge)
 */
 void setForces(CollisionInfo& collisionInfo) {
 	if (collisionInfo.collisionPoints.size() == 0) {
@@ -394,6 +412,10 @@ void setForces(CollisionInfo& collisionInfo) {
 
 }
 
+/*
+* transform vertices of all objects with it's modelMatrix to get the true coordinates
+* returns map of object ids and object vertices
+*/
 std::unordered_map<int, std::vector<glm::vec3>> CollisionSystem::transformVertices() {
 	std::unordered_map<int, std::vector<glm::vec3>>map;
 	for (GameObject* object : gameObjects) {
@@ -419,26 +441,44 @@ std::unordered_map<int, std::vector<glm::vec3>> CollisionSystem::transformVertic
 	return map;
 }
 
-
+/*
+* creates memo to avoid duplicate comparisons
+* creates map to get the true coordinates of each objects vertices after matrix calculations
+* first checks collision using bounding volumes, then if bounding volumes collide checks it again using SAT
+* checkCollisionUsingSAT returns a CollisionInfo object that contains information about the collision
+* if collides sets Forces to the game objects
+* broadcasts the collision to listeners
+*/
 void CollisionSystem::onUpdate(float deltaTime) {
 	std::vector<std::vector<bool>>memo(gameObjects.size(), std::vector<bool>(gameObjects.size()));
 	std::unordered_map<int, std::vector<glm::vec3>>map = transformVertices();
+
 	for (int i = 0; i < gameObjects.size(); ++i) {
 		if (!gameObjects[i]->getPhysicsComponent().collidable) continue;
+
 		for (int j = 0; j < gameObjects.size(); ++j) {
 			if (!gameObjects[j]->getPhysicsComponent().collidable) continue;
 			if (i == j) continue;
 			if (glm::length(gameObjects[i]->getVelocityComponent().linearVelocity) == 0 
 				&& glm::length(gameObjects[j]->getVelocityComponent().linearVelocity) == 0) continue;
+
 			int smaller = i < j ? i : j;
 			int bigger = i > j ? i : j;
-			CollisionInfo collision = checkCollision(gameObjects[i], gameObjects[j], map);
-			if (collision.collides && !memo[smaller][bigger]) {
+
+			if (memo[smaller][bigger]) continue;
+
+			if (!checkCollisionUsingBoundingVolumes(gameObjects[i], gameObjects[j])) continue;
+
+			CollisionInfo collision = checkCollisionUsingSAT(gameObjects[i], gameObjects[j], map);
+			if (collision.collides) {
 				setForces(collision);
 				memo[smaller][bigger] = true;
-				gameObjects[i]->getPhysicsComponent().onHitEvent.broadcast(gameObjects[i],gameObjects[j]);
-				gameObjects[j]->getPhysicsComponent().onHitEvent.broadcast(gameObjects[j],gameObjects[i]);
+				if(gameObjects.size() > i)
+					gameObjects[i]->getPhysicsComponent().onHitEvent.broadcast(gameObjects[i],gameObjects[j]);
+				if(gameObjects.size() > j)
+					gameObjects[j]->getPhysicsComponent().onHitEvent.broadcast(gameObjects[j],gameObjects[i]);
 			}
+
 		}
 	}
 

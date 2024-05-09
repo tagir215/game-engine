@@ -41,10 +41,10 @@ public:
 		return newObject;
 	}
 
-	template<typename T>
-	void newSystem() {
+	template<typename T, typename... Args>
+	void newSystem(Args... args) {
 		static_assert(std::is_base_of<SystemBase, T>::value, "T must be a subclass of SystemBase");
-		T* newSystem = new T(children);
+		T* newSystem = new T(children, args...);
 		systems.push_back(newSystem);
 	}
 
