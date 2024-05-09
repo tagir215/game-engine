@@ -10,7 +10,7 @@ void ComponentSorter::onUpdate(float deltaTime)
 		if (object->getTransformComponent() != nullptr) {
 			object->getTransformComponent()->useCache = false;
 		}
-		if (object->getParent() != nullptr) {
+		if (object->getParent() != nullptr && object->getTransformComponent() != nullptr) {
 			object->getTransformComponent()->setParent(object->getParent()->getTransformComponent());
 		}
 	}

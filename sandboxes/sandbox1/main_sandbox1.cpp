@@ -4,9 +4,7 @@
 class MyGame : public engine::Application {
 public:
 	MyGame() : engine::Application(800, 600, "Sandbox1") {
-		Level1* level = new Level1();
-		setCurrentScene(level);
-		scenes.push_back(level);
+		SceneManager::getInstance().createScene<Level1>("level1");
 	}
 
 	virtual void update(float deltaTime) {

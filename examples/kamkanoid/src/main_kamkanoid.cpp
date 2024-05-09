@@ -1,12 +1,13 @@
 #include <engine/application.h>
 #include "../assets/scenes/level_1.h"
+#include "../assets/scenes/mainmenu.h"
+
 
 class Kamkanoid : public engine::Application{
 public:
 	Kamkanoid() : engine::Application(800, 600, "Kamkanoid") {
-		Level_1* level = new Level_1();
-		setCurrentScene(level);
-		scenes.push_back(level);
+		SceneManager::getInstance().createScene<MainMenu>("mainmenu");
+		SceneManager::getInstance().createScene<Level_1>("level_1");
 	}
 
 	virtual void update(float deltaTime) {

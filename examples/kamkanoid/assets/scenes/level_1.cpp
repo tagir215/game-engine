@@ -12,9 +12,9 @@
 #include "../scripts/entities/uientity.h"
 
 
-Level_1::Level_1() 
+Level_1::Level_1()
 {
-	camera = std::make_unique<Camera>(this,0, 640, 0, 480);
+	camera = newObject<Camera>(0, 640, 0, 480);
 	camera->addTransformComponent(new TransformComponent(glm::vec3(-320.0f, -240.0f, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
 
 	createUI();
@@ -38,12 +38,10 @@ Level_1::Level_1()
 
 	createBricks(container);
 
-	newSystem<ComponentSorter>();
 	newSystem<ScoreSystem>();
 	newSystem<CharacterSystem>();
 	newSystem<CollisionSystem>();
 	newSystem<MovementSystem>();
-
 }
 
 void Level_1::createUI() 
@@ -51,7 +49,6 @@ void Level_1::createUI()
 	GameObject* ui = newObject<GameObject>();
 	ui->addTransformComponent(new TransformComponent(glm::vec3(240, 100, 0)));
 	
-	FontSerializer fontSerializer;
 	std::string fontDataPath = "../../../../engine/assets/fonts/Monospaced.fnt";
 	std::string fontImagePath = "../../../../engine/assets/fonts/Monospaced.png";
 

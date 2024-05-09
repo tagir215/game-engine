@@ -3,8 +3,8 @@
 void Scene::render() {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	meshRenderer->render(children, camera.get());
-	uiRenderer->render(children, camera.get());
+	meshRenderer->render(children, camera);
+	uiRenderer->render(children, camera);
 }
 
 void Scene::update(float deltaTime) {
@@ -13,12 +13,13 @@ void Scene::update(float deltaTime) {
 	}
 }
 
-Scene::Scene() {
+Scene::Scene(){
 	ShaderSource shaderSource;
 	shaderMap[0] = new Shader(shaderSource.vertexShaderSource,shaderSource.fragmentShaderSource);
 	shaderMap[1] = new Shader(shaderSource.vertexShaderSourceNoTexture, shaderSource.fragmentShaderSourceNoTexture);
 	meshRenderer = new MeshRenderer(shaderMap);
 	uiRenderer = new UiRenderer(shaderMap);
+	newSystem<ComponentSorter>();
 }
 
 Scene::~Scene() {
@@ -30,4 +31,5 @@ Scene::~Scene() {
 	}
 	delete meshRenderer;
 	delete uiRenderer;
+	delete camera;
 }

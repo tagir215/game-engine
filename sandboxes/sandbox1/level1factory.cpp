@@ -8,7 +8,7 @@ GameObject* Level1Factory::buildGround(Scene* scene, TransformComponent* transfo
 	ground->addMeshComponent(mesh);
 	ground->addTransformComponent(transform);
 	ground->addShaderComponent(ShaderComponent(1));
-	ground->addPhysicsComponent(PhysicsComponent(mass, true,0.4f,false,0, glm::vec3(500,50,1), true));
+	ground->addPhysicsComponent(PhysicsComponent(mass, true,0.4f,false,0, glm::vec3(transform->scale.x,transform->scale.y,1), true));
 	return ground;
 }
 
@@ -20,7 +20,7 @@ GameObject* Level1Factory::buildBox(Scene* scene, TransformComponent* transform,
 	box->addShaderComponent(ShaderComponent(1));
 	box->addVelocityComponent(VelocityComponent(0, 0, 0));
 	box->addTransformComponent(transform);
-	box->addPhysicsComponent(PhysicsComponent(mass, true,0.4f,true,0.5f, glm::vec3(50, 50,0), true));
+	box->addPhysicsComponent(PhysicsComponent(mass, true,0.4f,true,0.5f, glm::vec3(transform->scale.x, transform->scale.y,0), true));
 	return box;
 }
 

@@ -8,9 +8,9 @@
 #include <engine/graphics/texturemanager.h>
 #include "level1factory.h"
 
-Level1::Level1() {
+Level1::Level1(){
 
-	camera = std::make_unique<Camera>(this,0, 640, 0, 480);
+	camera = newObject<Camera>(0, 640, 0, 480);
 	camera->addTransformComponent(new TransformComponent(glm::vec3(-320.0f, -240.0f, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
 
 	PlayerFactory playerFactory;

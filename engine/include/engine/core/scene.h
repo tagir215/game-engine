@@ -9,6 +9,7 @@
 #include "engine/graphics/uirenderer.h"
 #include "engine/core/gameobject.h"
 #include "engine/components/componentsorter.h"
+#include "engine/core/scenemanager.h"
 
 class Scene : public Object<GameObject> {
 public:
@@ -49,11 +50,12 @@ public:
 	}
 
 protected:
-	std::unique_ptr<Camera> camera;
+	Camera* camera = nullptr;
 	std::vector<SystemBase*>systems;
 	std::unordered_map<int, Shader*>shaderMap;
+	float ANIMATION_FRAME_TIME = 0.1f;
+private:
 	MeshRenderer* meshRenderer = nullptr;
 	UiRenderer* uiRenderer = nullptr;
-	float ANIMATION_FRAME_TIME = 0.1f;
 };
 
