@@ -1,6 +1,6 @@
 #include "engine/components/textcomponent.h"
 
-TextComponent::TextComponent(std::string& fontDataPath, std::string& fontImagePath)
+TextComponent::TextComponent(std::string fontDataPath, std::string fontImagePath)
 {
 	std::vector<FontCharacterInfo> charInfos = fontSerializer.deserializeFontInfo(fontDataPath);
 	for (int i = 0; i < charInfos.size(); ++i) {

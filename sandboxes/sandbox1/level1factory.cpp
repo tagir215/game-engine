@@ -1,7 +1,7 @@
 #include "level1factory.h"
 #include "../assets/basicShapes/plane.h"
 
-GameObject* Level1Factory::buildGround(Scene* scene, TransformComponent* transform, float mass) {
+GameObject* Level1Factory::buildGround(Scene* scene, float mass) {
 	GameObject* ground = scene->newObject<GameObject>();
 	Plane* mesh = new Plane();
 	mesh->setColor(0.5f,0,0,1);

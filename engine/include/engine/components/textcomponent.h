@@ -10,7 +10,7 @@
 
 class TextComponent {
 public:
-	TextComponent(std::string& fontDataPath, std::string& fontImagePath);
+	TextComponent(std::string fontDataPath, std::string fontImagePath);
 	~TextComponent() {
 		delete mesh;
 		delete textureComponent;

@@ -15,7 +15,7 @@
 Level_1::Level_1()
 {
 	camera = newObject<Camera>(0, 640, 0, 480);
-	camera->addTransformComponent(new TransformComponent(glm::vec3(-320.0f, -240.0f, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
+	camera->createComponent<TransformComponent>(glm::vec3(-320.0f, -240.0f, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
 
 	createUI();
 
@@ -23,15 +23,19 @@ Level_1::Level_1()
 	newObject<ProjectileEntity>();
 
 	GameObject* container = newObject<GameObject>();
-	container->addTransformComponent(new TransformComponent(glm::vec3(-50, -20, 0)));
+	container->createComponent<TransformComponent>(glm::vec3(-50, -20, 0));
 
 	const float X = 200;
 	const float G = 10;
 	const float H = 450;
 
-	WallEntity* wallR = newObject<WallEntity>(new TransformComponent(glm::vec3(X,0, 0), glm::vec3(0, 0, 0), glm::vec3(G, H, 1)));
-	WallEntity* wallL = newObject<WallEntity>(new TransformComponent(glm::vec3(-X, 0, 0), glm::vec3(0, 0, 0), glm::vec3(G, H, 1)));
-	WallEntity* wallT = newObject<WallEntity>(new TransformComponent(glm::vec3(0, H/2, 0), glm::vec3(0, 0, 0), glm::vec3(X*2 + G, G, 1)));
+	WallEntity* wallR = newObject<WallEntity>();
+	wallR->createComponent<TransformComponent>(glm::vec3(X, 0, 0), glm::vec3(0, 0, 0), glm::vec3(G, H, 1));
+	WallEntity* wallL = newObject<WallEntity>();
+	wallL->createComponent<TransformComponent>(glm::vec3(-X, 0, 0), glm::vec3(0, 0, 0), glm::vec3(G, H, 1));
+	WallEntity* wallT = newObject<WallEntity>();
+	wallT->createComponent<TransformComponent>(glm::vec3(0, H / 2, 0), glm::vec3(0, 0, 0), glm::vec3(X * 2 + G, G, 1));
+
 	container->addChild(wallR);
 	container->addChild(wallL);
 	container->addChild(wallT);
@@ -47,54 +51,48 @@ Level_1::Level_1()
 void Level_1::createUI() 
 {
 	GameObject* ui = newObject<GameObject>();
-	ui->addTransformComponent(new TransformComponent(glm::vec3(240, 100, 0)));
+	ui->createComponent<TransformComponent>(glm::vec3(240, 100, 0));
 	
 	std::string fontDataPath = "../../../../engine/assets/fonts/Monospaced.fnt";
 	std::string fontImagePath = "../../../../engine/assets/fonts/Monospaced.png";
 
 	GameObject* title = newObject<GameObject>();
-	title->addTransformComponent(new TransformComponent(glm::vec3(0,100,0),glm::vec3(0,0,0),glm::vec3(0.4f,0.4f,0)));
-	TextComponent* titleText = new TextComponent(fontDataPath,fontImagePath);
-	titleText->setText("KAMKANOID");
-	title->addTextComponent(titleText);
+	title->createComponent<TransformComponent>(glm::vec3(0, 100, 0), glm::vec3(0, 0, 0), glm::vec3(0.4f, 0.4f, 0));
+	title->createComponent<TextComponent>(fontDataPath, fontImagePath);
+	title->getTextComponent()->setText("KAMKANOID");
 	ui->addChild(title);
 
 	GameObject* score = newObject<GameObject>();
-	score->addTransformComponent(new TransformComponent(glm::vec3(0,20,0),glm::vec3(0,0,0),glm::vec3(0.3f,0.3f,0)));
-	TextComponent* scoreText = new TextComponent(fontDataPath,fontImagePath);
-	scoreText->setText("SCORE");
-	score->addTextComponent(scoreText);
+	score->createComponent<TransformComponent>(glm::vec3(0, 20, 0), glm::vec3(0, 0, 0), glm::vec3(0.3f, 0.3f, 0));
+	score->createComponent<TextComponent>(fontDataPath,fontImagePath);
+	score->getTextComponent()->setText("SCORE");
 	ui->addChild(score);
 
 	GameObject* scoreNum = newObject<GameObject>();
-	scoreNum->addTransformComponent(new TransformComponent(glm::vec3(0,-0,0),glm::vec3(0,0,0),glm::vec3(0.3f,0.3f,0)));
-	TextComponent* scoreNumText = new TextComponent(fontDataPath,fontImagePath);
-	scoreNumText->setText("00");
-	scoreNum->addTextComponent(scoreNumText);
+	scoreNum->createComponent<TransformComponent>(glm::vec3(0, -0, 0), glm::vec3(0, 0, 0), glm::vec3(0.3f, 0.3f, 0));
+	scoreNum->createComponent<TextComponent>(fontDataPath, fontImagePath);
+	scoreNum->getTextComponent()->setText("00");
 	scoreNum->getTags().insert("score");
 	ui->addChild(scoreNum);
 
 	GameObject* highScore = newObject<GameObject>();
-	highScore->addTransformComponent(new TransformComponent(glm::vec3(0,-40,0),glm::vec3(0,0,0),glm::vec3(0.3f,0.3f,0)));
-	TextComponent* highScoreText = new TextComponent(fontDataPath,fontImagePath);
-	highScoreText->setText("HIGH SCORE");
-	highScore->addTextComponent(highScoreText);
+	highScore->createComponent<TransformComponent>(glm::vec3(0, -40, 0), glm::vec3(0, 0, 0), glm::vec3(0.3f, 0.3f, 0));
+	highScore->createComponent<TextComponent>(fontDataPath,fontImagePath);
+	highScore->getTextComponent()->setText("HIGH SCORE");
 	ui->addChild(highScore);
 
 	GameObject* highScoreNum = newObject<GameObject>();
-	highScoreNum->addTransformComponent(new TransformComponent(glm::vec3(0,-60,0),glm::vec3(0,0,0),glm::vec3(0.3f,0.3f,0)));
-	TextComponent* highScoreNumText = new TextComponent(fontDataPath,fontImagePath);
-	highScoreNumText->setText("00");
-	highScoreNum->addTextComponent(highScoreNumText);
+	highScoreNum->createComponent<TransformComponent>(glm::vec3(0, -60, 0), glm::vec3(0, 0, 0), glm::vec3(0.3f, 0.3f, 0));
+	highScoreNum->createComponent<TextComponent>(fontDataPath, fontImagePath);
+	highScoreNum->getTextComponent()->setText("00");
 	highScoreNum->getTags().insert("highscore");
 	ui->addChild(highScoreNum);
 
 
 	GameObject* logoLicense = newObject<GameObject>();
-	logoLicense->addTransformComponent(new TransformComponent(glm::vec3(0,-200,0),glm::vec3(0,0,0),glm::vec3(0.3f,0.3f,0)));
-	TextComponent* logoText = new TextComponent(fontDataPath,fontImagePath);
-	logoText->setText("KAMK");
-	logoLicense->addTextComponent(logoText);
+	logoLicense->createComponent<TransformComponent>(glm::vec3(0, -200, 0), glm::vec3(0, 0, 0), glm::vec3(0.3f, 0.3f, 0));
+	logoLicense->createComponent<TextComponent>(fontDataPath, fontImagePath);
+	logoLicense->getTextComponent()->setText("KAMK");
 	ui->addChild(logoLicense);
 
 }
@@ -125,12 +123,12 @@ void Level_1::createBricks(GameObject* container)
 
 	for (int x = 0; x < COUNT_X; ++x) {
 		for (int y = 0; y < COUNT_Y; ++y) {
-			TransformComponent* t = new TransformComponent(
-				glm::vec3(START_X + WIDTH * x, START_Y + HEIGHT * y, 0), 
-				glm::vec3(0, 0, 0), 
-				glm::vec3(WIDTH-GAP_X, HEIGHT-GAP_Y, 1)
+			BrickEntity* brick = newObject<BrickEntity>(rowColors[y]);
+			brick->createComponent<TransformComponent>(
+				glm::vec3(START_X + WIDTH * x, START_Y + HEIGHT * y, 0),
+				glm::vec3(0, 0, 0),
+				glm::vec3(WIDTH - GAP_X, HEIGHT - GAP_Y, 1)
 			);
-			BrickEntity* brick = newObject<BrickEntity>(t, rowColors[y]);
 			container->addChild(brick);
 		}
 	}

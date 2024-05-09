@@ -11,13 +11,13 @@ void ProjectileEntity::beginPlay()
 {
 	const float WIDTH = 10;
 	const float HEIGHT = 10;
-	Plane* mesh = new Plane();
-	mesh->setColor(1, 1, 1, 1);
-	addMeshComponent(mesh);
-	addVelocityComponent(VelocityComponent(0, 200, 0));
-	addTransformComponent(new TransformComponent(glm::vec3(-50, 0, 0), glm::vec3(0, 0, 0), glm::vec3(WIDTH, HEIGHT, 1)));
-	addPhysicsComponent(PhysicsComponent(0, true, 1, true, 0, glm::vec3(WIDTH,HEIGHT,1), false));
-	addShaderComponent(ShaderComponent(1));
+	Plane* plane = new Plane();
+	setMeshComponent(plane);
+	getMeshComponent()->setColor(1, 1, 1, 1);
+	createComponent<VelocityComponent>(0, 200, 0);
+	createComponent<TransformComponent>(glm::vec3(-50, 0, 0), glm::vec3(0, 0, 0), glm::vec3(WIDTH, HEIGHT, 1));
+	createComponent<PhysicsComponent>(0, true, 1, true, 0, glm::vec3(WIDTH, HEIGHT, 1), false);
+	createComponent<ShaderComponent>(1);
 	getTags().insert("projectile");
 
 	getPhysicsComponent().onHitEvent.addListener(this, [&](GameObject* thisObject, GameObject* otherObject) {
