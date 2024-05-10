@@ -11,11 +11,11 @@ GameObject::GameObject(Scene* scene) : scene(scene)
 
 
 GameObject::~GameObject() {
-    delete texture;
     delete mesh;
     delete inputComponent;
     delete textComponent;
     delete transform;
+    delete texture;
 }
 
 void GameObject::beginPlay()

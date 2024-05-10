@@ -1,9 +1,9 @@
-#include "../include/engine/application.h"
+#include "engine/application.h"
 
 namespace engine {
 
 	Application::Application(int sizeX, int sizeY, const std::string& title) 
-		: sizeX(sizeX), sizeY(sizeY), title(title), scenes(scenes) {
+		: sizeX(sizeX), sizeY(sizeY), title(title) {
 
 		glfwSetErrorCallback([](int error, const char* description) {
 			fprintf(stderr, "Error %d: %s\n", error, description);
@@ -26,10 +26,10 @@ namespace engine {
 
 		glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 			if (action == GLFW_PRESS) {
-				InputManager::getInstance().updatePress(key);
+				GameMode::getInstance().getInputManager().updatePress(key);
 			}
 			if (action == GLFW_RELEASE) {
-				InputManager::getInstance().updateRelease(key);
+				GameMode::getInstance().getInputManager().updateRelease(key);
 			}
 			});
 
@@ -37,17 +37,23 @@ namespace engine {
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		initRenderers();
 	}
+
+	void Application::initRenderers() {
+		ShaderSource shaderSource;
+		shaderMap[0] = new Shader(shaderSource.vertexShaderSource, shaderSource.fragmentShaderSource);
+		shaderMap[1] = new Shader(shaderSource.vertexShaderSourceNoTexture, shaderSource.fragmentShaderSourceNoTexture);
+		rendererList.push_back(new MeshRenderer(shaderMap));
+		rendererList.push_back(new UiRenderer(shaderMap));
+	}
+
 	Application::~Application() {
-		for (Scene* scene : scenes) {
-			delete scene;
-		}
 	}
 	int Application::run() {
-		currentScene->start();
+		sceneManager.getCurrentScene()->start();
 		m_running = true;
-
-		currentScene = scenes[0];
 
 
 		float prevTime = (float)glfwGetTime();
@@ -64,6 +70,12 @@ namespace engine {
 		glfwDestroyWindow(window);
 		glfwTerminate();
 
+		for (auto r : rendererList) {
+			delete r;
+		}
+		for (auto& pair : shaderMap) {
+			delete pair.second;
+		}
 		return 0;
 	}
 
@@ -75,11 +87,14 @@ namespace engine {
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
 		glViewport(0, 0, width, height);
-		currentScene->render();
-
-
+		sceneManager.getCurrentScene()->render(rendererList);
 	}
 	void Application::update(float deltaTime) {
+		if (sceneManager.getCurrentScene() != currentScene) {
+			if (currentScene != nullptr) currentScene->clearScene();
+			currentScene = sceneManager.getCurrentScene();
+			currentScene->start();
+		}
 		currentScene->update(deltaTime);
 	}
 

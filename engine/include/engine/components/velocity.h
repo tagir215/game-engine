@@ -1,4 +1,5 @@
 #pragma once
+
 struct VelocityComponent {
 	glm::vec3 linearVelocity;
 	glm::vec3 rotation;

@@ -1,17 +1,17 @@
 #include "wallentity.h"
 #include "../assets/basicShapes/plane.h"
+#include <engine/core/scenemanager.h>
 
-WallEntity::WallEntity(Scene* scene, TransformComponent* transform) : GameObject(scene)
+WallEntity::WallEntity(Scene* scene) : GameObject(scene)
 {
-	this->transform = transform;
 }
 
 void WallEntity::beginPlay()
 {
-	addTransformComponent(transform);
-	Plane* mesh = new Plane();
-	mesh->setColor(0.4f, 0.4f, 0.4f, 1);
-	addMeshComponent(mesh);
-	addPhysicsComponent(PhysicsComponent(1000000000, true, 1, false, 0, transform->scale.x, transform->scale.y, false));
-	addShaderComponent(ShaderComponent(1));
+	Plane* plane = new Plane();
+	setMeshComponent(plane);
+	getMeshComponent()->setColor(0.4f, 0.4f, 0.4f, 1);
+	createComponent<PhysicsComponent>(1000000000, true, 1, false, 0, glm::vec3(getTransformComponent()->scale.x, getTransformComponent()->scale.y, 1), false);
+	createComponent<ShaderComponent>(1);
+
 }

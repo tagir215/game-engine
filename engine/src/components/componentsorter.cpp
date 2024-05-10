@@ -7,9 +7,11 @@ ComponentSorter::ComponentSorter(std::vector<GameObject*>& gameObjects) : System
 void ComponentSorter::onUpdate(float deltaTime)
 {
 	for (GameObject* object : gameObjects) {
-		GameObject* parent = object->getParent();
-		if (parent != nullptr) {
-			object->getTransformComponent()->setParent(parent->getTransformComponent());
+		if (object->getTransformComponent() != nullptr) {
+			object->getTransformComponent()->useCache = false;
+		}
+		if (object->getParent() != nullptr && object->getTransformComponent() != nullptr) {
+			object->getTransformComponent()->setParent(object->getParent()->getTransformComponent());
 		}
 	}
 }

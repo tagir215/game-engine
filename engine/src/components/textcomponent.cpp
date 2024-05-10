@@ -1,6 +1,6 @@
 #include "engine/components/textcomponent.h"
 
-TextComponent::TextComponent(std::string& fontDataPath, std::string& fontImagePath)
+TextComponent::TextComponent(std::string fontDataPath, std::string fontImagePath)
 {
 	std::vector<FontCharacterInfo> charInfos = fontSerializer.deserializeFontInfo(fontDataPath);
 	for (int i = 0; i < charInfos.size(); ++i) {
@@ -79,13 +79,14 @@ void TextComponent::generateMesh()
 	std::vector<float>texCoords;
 	int currentX = 0;
 	int currentY = 0;
+	textWidth = 0;
+	textHeight = 0;
 
 	for (int i = 0; i < text.length(); ++i) {
 		FontCharacterInfo ci = charInfoMap[text[i]];
 		calculateCharPlaneVertices(vertices, texCoords, currentX, currentY, ci);
 		currentX += ci.xadvance;
-		if (i == text.length() - 1) {
-			textWidth += ci.width;
+		if (ci.height > textHeight) {
 			textHeight = ci.height;
 		}
 	}

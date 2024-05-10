@@ -10,7 +10,7 @@
 
 class TextComponent {
 public:
-	TextComponent(std::string& fontDataPath, std::string& fontImagePath);
+	TextComponent(std::string fontDataPath, std::string fontImagePath);
 	~TextComponent() {
 		delete mesh;
 		delete textureComponent;
@@ -18,6 +18,7 @@ public:
 
 	void setText(std::string text) {
 		this->text = text;
+		delete mesh;
 		generateMesh();
 	}
 	void setColor(glm::vec3 color) {

@@ -7,6 +7,7 @@ UiRenderer::UiRenderer(const std::unordered_map<int, Shader*> shaderMap) : Rende
 
 void UiRenderer::render(const std::vector<GameObject*>& gameObjects, Camera* camera)
 {
+	if (camera == nullptr || camera->getTransformComponent() == nullptr) return;
 	glm::mat4 vpMatrix = camera->getProjectionMatrix() * glm::inverse(transformer.getModelMatrix(camera->getTransformComponent()));
 	for (GameObject* object : gameObjects) {
 		if (object->getTextComponent() == nullptr) {

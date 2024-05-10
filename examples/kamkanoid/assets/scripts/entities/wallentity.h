@@ -3,8 +3,7 @@
 
 class WallEntity : public GameObject {
 public:
-	WallEntity(Scene* scene, TransformComponent* transform);
+	WallEntity(Scene* scene);
 	void beginPlay() override;
 private:
-	TransformComponent* transform;
 };

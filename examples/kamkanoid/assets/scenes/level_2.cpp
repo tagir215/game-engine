@@ -1,4 +1,5 @@
-#include "level_1.h"
+#include "level_2.h"
+
 #include "engine/systems/collisionsystem.h"
 #include "engine/systems/gravitysystem.h"
 #include "engine/systems/movementsystem.h"
@@ -11,7 +12,7 @@
 #include "../scripts/entities/brickentity.h"
 #include "../scripts/entities/uientity.h"
 
-void Level_1::onStart()
+void Level_2::onStart()
 {
 	camera = newObject<Camera>(0, 640, 0, 480);
 	camera->createComponent<TransformComponent>(glm::vec3(-320.0f, -240.0f, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
@@ -53,7 +54,7 @@ void Level_1::onStart()
 }
 
 
-void Level_1::createUI() 
+void Level_2::createUI() 
 {
 	GameObject* ui = newObject<GameObject>();
 	ui->createComponent<TransformComponent>(glm::vec3(240, 100, 0));
@@ -103,12 +104,12 @@ void Level_1::createUI()
 }
 
 
-void Level_1::createBricks(GameObject* container)
+void Level_2::createBricks(GameObject* container)
 {
 	const int G = 10;
 	const int WIDTH_GAME_SCREEN = 400;
 	const int COUNT_X = 13;
-	const int COUNT_Y = 6;
+	const int COUNT_Y = 8;
 	const int GAP_X = 3;
 	const int GAP_Y = GAP_X;
 	const int WIDTH = WIDTH_GAME_SCREEN / COUNT_X; 
@@ -117,19 +118,21 @@ void Level_1::createBricks(GameObject* container)
 	const int START_Y = 50;
 
 
-
 	glm::vec3 colors[] = {
-		glm::vec3(74,59,98),
+		glm::vec3(8,91,193),
 		glm::vec3(255,255,255),
+		glm::vec3(8,255,8),
 	};
 
 
 	int bricksToSpawn[] = {
-	1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,0,0,1,1,1,1,
-	1,1,1,2,1,1,1,0,0,1,1,2,1,
-	1,1,1,2,2,1,0,0,0,1,2,1,0,
-	0,0,1,1,1,0,0,0,0,1,1,0,0,
+	0,0,0,0,0,0,1,0,0,0,0,0,0,
+	0,0,0,1,1,1,1,3,3,3,0,0,0,
+	0,0,1,2,2,2,2,2,2,3,3,0,0,
+	0,0,1,2,2,2,2,2,2,3,3,0,0,
+	0,1,1,1,1,2,2,2,2,3,3,3,0,
+	0,1,1,1,1,2,2,2,2,3,3,3,0,
+	0,1,0,0,1,0,0,0,1,0,0,1,0,
 	0,0,0,0,0,0,0,0,0,0,0,0,0,
 	};
 
@@ -148,6 +151,5 @@ void Level_1::createBricks(GameObject* container)
 			container->addChild(brick);
 		}
 	}
-
 
 }
