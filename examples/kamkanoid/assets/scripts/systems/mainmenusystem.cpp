@@ -1,5 +1,5 @@
 #include "mainmenusystem.h"
-#include <engine/core/scenemanager.h>
+#include "engine/core/gamemode.h"
 
 MainMenuSystem::MainMenuSystem(std::vector<GameObject*>& gameObjects) : SystemBase(gameObjects)
 {
@@ -7,7 +7,7 @@ MainMenuSystem::MainMenuSystem(std::vector<GameObject*>& gameObjects) : SystemBa
 
 void MainMenuSystem::onUpdate(float deltaTime)
 {
-	if (InputManager::getInstance().isSpacePressed()) {
-		SceneManager::getInstance().setScene("level_1");
+	if (GameMode::getInstance().getInputManager().isSpacePressed()) {
+		GameMode::getInstance().getSceneManager().setScene("level_1");
 	}
 }

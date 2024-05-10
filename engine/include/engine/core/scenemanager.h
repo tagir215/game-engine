@@ -5,10 +5,7 @@ class Scene;
 
 class SceneManager {
 public:
-	static SceneManager& getInstance() {
-		static SceneManager instance; 
-		return instance;
-	}
+	SceneManager() {}
 
 	~SceneManager() {
 		for (auto& pair : sceneMap) {
@@ -37,6 +34,5 @@ private:
 	std::unordered_map<std::string, Scene*>sceneMap;
 	std::vector<Scene*>sceneOrder;
 	Scene* currentScene = nullptr;
-	SceneManager() {}
 };
 

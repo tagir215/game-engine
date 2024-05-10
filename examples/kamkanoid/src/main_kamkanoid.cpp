@@ -7,9 +7,9 @@
 class Kamkanoid : public engine::Application{
 public:
 	Kamkanoid() : engine::Application(800, 600, "Kamkanoid") {
-		SceneManager::getInstance().attachScene<MainMenu>("mainmenu");
-		SceneManager::getInstance().attachScene<Level_1>("level_1");
-		SceneManager::getInstance().attachScene<Level_2>("level_2");
+		sceneManager.attachScene<MainMenu>("mainmenu");
+		sceneManager.attachScene<Level_1>("level_1");
+		sceneManager.attachScene<Level_2>("level_2");
 	}
 
 	virtual void update(float deltaTime) {

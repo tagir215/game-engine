@@ -33,7 +33,6 @@ void Scene::clearScene()
 }
 
 Scene::Scene(){
-	newSystem<ComponentSorter>();
 }
 
 Scene::~Scene() {
@@ -41,7 +40,7 @@ Scene::~Scene() {
 }
 
 void Scene::start() {
-
+	newSystem<ComponentSorter>();
 	onStart();
 
 	for (GameObject* o : children) {

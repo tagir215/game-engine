@@ -1,7 +1,7 @@
 #include "scoresystem.h"
 #include "../entities/projectileentity.h"
 #include <string>
-#include <engine/core/scenemanager.h>
+#include <engine/core/gamemode.h>
 
 void ScoreSystem::onUpdate(float deltaTime)
 {
@@ -9,26 +9,30 @@ void ScoreSystem::onUpdate(float deltaTime)
 		if (object->getTextComponent() == nullptr && object->getVelocityComponent().linearVelocity.y == 0) {
 			continue;
 		}
+		if (highScore != GameMode::getInstance().getPlayerState().getScore()) {
+			highScore = GameMode::getInstance().getPlayerState().getScore();
+		}
 		ProjectileEntity* projectile = dynamic_cast<ProjectileEntity*>(object);
 		if (projectile != nullptr) {
 			if (projectile->updateScore) {
 				currentScore += 10;
 				if (currentScore > highScore) {
 					highScore = currentScore;
+					GameMode::getInstance().getPlayerState().setScore(currentScore);
 				}
 				if (currentScore >= 100) {
-					SceneManager::getInstance().setScene("level_2");
+					GameMode::getInstance().getSceneManager().setScene("level_2");
 				}
 				projectile->updateScore = false;
 			}
 		}
-		else if(currentScore != oldScore){
-			if (object->getTags().find("score") != object->getTags().end()) {
+		else {
+			if (currentScore != oldScore && object->getTags().contains("score")) {
 				object->getTextComponent()->setText(std::to_string(currentScore));
-			}
-			if (object->getTags().find("highscore") != object->getTags().end()) {
-				object->getTextComponent()->setText(std::to_string(highScore));
 				oldScore = currentScore;
+			}
+			if (object->getTags().contains("highscore")) {
+				object->getTextComponent()->setText(std::to_string(highScore));
 			}
 		}
 	}

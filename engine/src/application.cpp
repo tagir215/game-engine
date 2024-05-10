@@ -26,10 +26,10 @@ namespace engine {
 
 		glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 			if (action == GLFW_PRESS) {
-				InputManager::getInstance().updatePress(key);
+				GameMode::getInstance().getInputManager().updatePress(key);
 			}
 			if (action == GLFW_RELEASE) {
-				InputManager::getInstance().updateRelease(key);
+				GameMode::getInstance().getInputManager().updateRelease(key);
 			}
 			});
 

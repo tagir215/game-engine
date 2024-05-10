@@ -2,6 +2,7 @@
 #include "engine/core/scene.h"
 #include "engine/core/gameobject.h"
 #include "../assets/basicShapes/plane.h"
+#include "engine/core/gamemode.h"
 
 ProjectileEntity::ProjectileEntity(Scene* scene) : GameObject(scene)
 {
@@ -30,7 +31,7 @@ void ProjectileEntity::beginPlay()
 			updateScore = true;
 		}
 		if (otherObject->getTags().find("bottomwall") != otherObject->getTags().end()) {
-			SceneManager::getInstance().setScene("mainmenu");
+			GameMode::getInstance().getSceneManager().setScene("mainmenu");
 		}
 		});
 

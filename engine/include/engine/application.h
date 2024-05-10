@@ -7,8 +7,7 @@
 #include "engine/application.h"
 #include "engine/core/scene.h"
 #include <string>
-#include "engine/input/inputmanager.h"
-#include "engine/core/scenemanager.h"
+#include "engine/core/gamemode.h"
 #include "../assets/shaders/ShaderSource.h"
 
 namespace engine {
@@ -24,13 +23,16 @@ namespace engine {
 		void update(float deltaTime);
 		void initRenderers();
 
+	protected:
+		SceneManager& sceneManager = GameMode::getInstance().getSceneManager();
+
 	private:
 		const int sizeX;
 		const int sizeY;
 		const std::string title;
 		bool m_running;
 		GLFWwindow* window;
-		SceneManager& sceneManager = SceneManager::getInstance();
+		InputManager& inputManager = GameMode::getInstance().getInputManager();
 		Scene* currentScene = nullptr;
 		std::vector<Renderer*>rendererList;
 		std::unordered_map<int, Shader*>shaderMap;

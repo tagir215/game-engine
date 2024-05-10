@@ -3,10 +3,7 @@
 
 class InputManager {
 public:
-	static InputManager& getInstance() {
-		static InputManager instance;
-		return instance;
-	}
+	InputManager() {}
 
 	void updatePress(int key);
 	void updateRelease(int key);
@@ -19,9 +16,6 @@ public:
 	
 private:
 
-	InputManager() {
-
-	}
 
 	void update(int key, bool b);
 
