@@ -4,7 +4,7 @@
 class MyGame : public engine::Application {
 public:
 	MyGame() : engine::Application(800, 600, "Sandbox1") {
-		SceneManager::getInstance().createScene<Level1>("level1");
+		SceneManager::getInstance().attachScene<Level1>("level1");
 	}
 
 	virtual void update(float deltaTime) {

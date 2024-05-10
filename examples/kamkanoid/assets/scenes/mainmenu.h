@@ -3,6 +3,7 @@
 
 class MainMenu : public Scene {
 public:
-	MainMenu();
+	MainMenu() {}
 private:
+	void onStart() override;
 };

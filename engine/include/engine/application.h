@@ -9,6 +9,7 @@
 #include <string>
 #include "engine/input/inputmanager.h"
 #include "engine/core/scenemanager.h"
+#include "../assets/shaders/ShaderSource.h"
 
 namespace engine {
 
@@ -21,6 +22,7 @@ namespace engine {
 		int run();
 		void render(GLFWwindow* window);
 		void update(float deltaTime);
+		void initRenderers();
 
 	private:
 		const int sizeX;
@@ -29,7 +31,9 @@ namespace engine {
 		bool m_running;
 		GLFWwindow* window;
 		SceneManager& sceneManager = SceneManager::getInstance();
-		Scene* currentScene;
+		Scene* currentScene = nullptr;
+		std::vector<Renderer*>rendererList;
+		std::unordered_map<int, Shader*>shaderMap;
 	};
 
 }

@@ -3,7 +3,6 @@
 #include "engine/systems/systembase.h"
 #include <vector>
 #include <memory>
-#include "../assets/shaders/ShaderSource.h"
 #include <unordered_map>
 #include "engine/systems/collisionsystem.h"
 #include "engine/graphics/uirenderer.h"
@@ -15,7 +14,7 @@ class Scene : public Object<GameObject> {
 public:
 	Scene();
 	~Scene();
-	void render();
+	void render(std::vector<Renderer*>& rendererList);
 	void update(float deltaTime);
 
 	template<typename T>
@@ -28,11 +27,11 @@ public:
 		return nullptr;
 	}
 
-	void start() {
-		for (GameObject* o : children) {
-			o->beginPlay();
-		}
-	}
+	void start();
+
+	virtual void onStart() = 0;
+
+	void clearScene();
 
 	template<typename T, typename... Args>
 	T* newObject(Args... args) {
@@ -52,10 +51,8 @@ public:
 protected:
 	Camera* camera = nullptr;
 	std::vector<SystemBase*>systems;
-	std::unordered_map<int, Shader*>shaderMap;
 	float ANIMATION_FRAME_TIME = 0.1f;
 private:
-	MeshRenderer* meshRenderer = nullptr;
-	UiRenderer* uiRenderer = nullptr;
+	const float MAX_DELTA_TIME = 0.05f;
 };
 

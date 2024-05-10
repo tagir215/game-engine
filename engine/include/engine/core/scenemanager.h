@@ -15,27 +15,27 @@ public:
 			delete pair.second;
 		}
 	}
+
 	void nextScene();
+	void setScene(std::string name);
 
 	template<typename SceneType>
-	void createScene(std::string name) {
+	void attachScene(std::string name) {
 		SceneType* scene = new SceneType();
 		sceneMap[name] = scene;
 		if (currentScene == nullptr) {
 			currentScene = scene;
 		}
+		sceneOrder.push_back(scene);
 	}
 
-	void setScene(std::string name) {
-		if (sceneMap.find(name) != sceneMap.end()) {
-			currentScene = sceneMap[name];
-		}
-	}
+
 	Scene* getCurrentScene() {
 		return currentScene;
 	}
 private:
 	std::unordered_map<std::string, Scene*>sceneMap;
+	std::vector<Scene*>sceneOrder;
 	Scene* currentScene = nullptr;
 	SceneManager() {}
 };

@@ -5,7 +5,6 @@ template<typename ObjectType>
 class Object {
 public:
 	Object(){}
-	virtual ~Object(){}
 
 	ObjectType* getParent() const {
 		return parent;

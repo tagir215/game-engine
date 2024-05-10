@@ -37,7 +37,18 @@ namespace engine {
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		initRenderers();
 	}
+
+	void Application::initRenderers() {
+		ShaderSource shaderSource;
+		shaderMap[0] = new Shader(shaderSource.vertexShaderSource, shaderSource.fragmentShaderSource);
+		shaderMap[1] = new Shader(shaderSource.vertexShaderSourceNoTexture, shaderSource.fragmentShaderSourceNoTexture);
+		rendererList.push_back(new MeshRenderer(shaderMap));
+		rendererList.push_back(new UiRenderer(shaderMap));
+	}
+
 	Application::~Application() {
 	}
 	int Application::run() {
@@ -59,6 +70,12 @@ namespace engine {
 		glfwDestroyWindow(window);
 		glfwTerminate();
 
+		for (auto r : rendererList) {
+			delete r;
+		}
+		for (auto& pair : shaderMap) {
+			delete pair.second;
+		}
 		return 0;
 	}
 
@@ -70,12 +87,11 @@ namespace engine {
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
 		glViewport(0, 0, width, height);
-		sceneManager.getCurrentScene()->render();
-
-
+		sceneManager.getCurrentScene()->render(rendererList);
 	}
 	void Application::update(float deltaTime) {
 		if (sceneManager.getCurrentScene() != currentScene) {
+			if (currentScene != nullptr) currentScene->clearScene();
 			currentScene = sceneManager.getCurrentScene();
 			currentScene->start();
 		}

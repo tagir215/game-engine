@@ -11,8 +11,7 @@
 #include "../scripts/entities/brickentity.h"
 #include "../scripts/entities/uientity.h"
 
-
-Level_1::Level_1()
+void Level_1::onStart()
 {
 	camera = newObject<Camera>(0, 640, 0, 480);
 	camera->createComponent<TransformComponent>(glm::vec3(-320.0f, -240.0f, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
@@ -36,9 +35,14 @@ Level_1::Level_1()
 	WallEntity* wallT = newObject<WallEntity>();
 	wallT->createComponent<TransformComponent>(glm::vec3(0, H / 2, 0), glm::vec3(0, 0, 0), glm::vec3(X * 2 + G, G, 1));
 
+	WallEntity* wallB = newObject<WallEntity>();
+	wallB->createComponent<TransformComponent>(glm::vec3(0, -H / 2, 0), glm::vec3(0, 0, 0), glm::vec3(X * 2 + G, G, 1));
+	wallB->getTags().insert("bottomwall");
+
 	container->addChild(wallR);
 	container->addChild(wallL);
 	container->addChild(wallT);
+	container->addChild(wallB);
 
 	createBricks(container);
 
@@ -47,6 +51,7 @@ Level_1::Level_1()
 	newSystem<CollisionSystem>();
 	newSystem<MovementSystem>();
 }
+
 
 void Level_1::createUI() 
 {
@@ -97,6 +102,7 @@ void Level_1::createUI()
 
 }
 
+
 void Level_1::createBricks(GameObject* container)
 {
 	const int G = 10;
@@ -112,18 +118,28 @@ void Level_1::createBricks(GameObject* container)
 
 
 
-	glm::vec3 rowColors[] = {
-		glm::vec3(0,255,0),
-		glm::vec3(255,0,255),
-		glm::vec3(0,112,255),
-		glm::vec3(255,255,0),
-		glm::vec3(255,0,0),
-		glm::vec3(157,157,157),
+	glm::vec3 colors[] = {
+		glm::vec3(74,59,98),
+		glm::vec3(255,255,255),
 	};
 
-	for (int x = 0; x < COUNT_X; ++x) {
-		for (int y = 0; y < COUNT_Y; ++y) {
-			BrickEntity* brick = newObject<BrickEntity>(rowColors[y]);
+
+	int bricksToSpawn[] = {
+	1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,0,0,1,1,1,1,
+	1,1,1,2,1,1,1,0,0,1,1,2,1,
+	1,1,1,2,2,1,0,0,0,1,2,1,0,
+	0,0,1,1,1,0,0,0,0,1,1,0,0,
+	0,0,0,0,0,0,0,0,0,0,0,0,0,
+	};
+
+
+	int i = 0;
+	for (int y = COUNT_Y-1; y >= 0; --y) {
+		for (int x = 0; x < COUNT_X; ++x) {
+			int brickI = bricksToSpawn[i++];
+			if (brickI == 0) continue;
+			BrickEntity* brick = newObject<BrickEntity>(colors[brickI - 1]);
 			brick->createComponent<TransformComponent>(
 				glm::vec3(START_X + WIDTH * x, START_Y + HEIGHT * y, 0),
 				glm::vec3(0, 0, 0),
@@ -132,5 +148,6 @@ void Level_1::createBricks(GameObject* container)
 			container->addChild(brick);
 		}
 	}
+
 
 }

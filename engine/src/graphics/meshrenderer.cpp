@@ -8,6 +8,7 @@ MeshRenderer::MeshRenderer(std::unordered_map<int,Shader*>shaderMap) : Renderer(
 * renders each mesh object within scene, called recursively if object contains inner objects
 */
 void MeshRenderer::render(const std::vector<GameObject*>& gameObjects, Camera* camera) {
+	if (camera == nullptr || camera->getTransformComponent() == nullptr) return;
 	glm::mat4 vpMatrix = camera->getProjectionMatrix() * glm::inverse(transformer.getModelMatrix(camera->getTransformComponent()));
 	for (GameObject* object : gameObjects) {
 

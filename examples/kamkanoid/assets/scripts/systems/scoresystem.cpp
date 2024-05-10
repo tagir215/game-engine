@@ -1,6 +1,7 @@
 #include "scoresystem.h"
 #include "../entities/projectileentity.h"
 #include <string>
+#include <engine/core/scenemanager.h>
 
 void ScoreSystem::onUpdate(float deltaTime)
 {
@@ -14,6 +15,9 @@ void ScoreSystem::onUpdate(float deltaTime)
 				currentScore += 10;
 				if (currentScore > highScore) {
 					highScore = currentScore;
+				}
+				if (currentScore >= 100) {
+					SceneManager::getInstance().setScene("level_2");
 				}
 				projectile->updateScore = false;
 			}
