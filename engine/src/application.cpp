@@ -52,7 +52,6 @@ namespace engine {
 	Application::~Application() {
 	}
 	int Application::run() {
-		sceneManager.getCurrentScene()->start();
 		m_running = true;
 
 
