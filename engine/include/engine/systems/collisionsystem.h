@@ -45,9 +45,9 @@ private:
 	struct CollisionPoint {
 		glm::vec3 pos;
 		glm::vec3 velocity;
+		glm::vec3 centroid;
 	};
 
-	std::unordered_map<int, CollisionObjectInfo>collisionObjectInfoMap;
 
 
 
@@ -91,19 +91,21 @@ private:
 	/*
 	* add rotation vector to the uhh velocity thing
 	*/
-	glm::vec3 combineWithRotation(GameObject* obj, CollisionInfo& collisionInfo, glm::vec3 collisionPointCentroid);
+	glm::vec3 combineWithRotation(glm::vec3& objLinearVelocity, glm::vec3& objRotation, CollisionInfo& collisionInfo, glm::vec3 collisionPointCentroid);
 
 	/*
 	* calculates Speeds of both objects after the collision
 	* v1m1 + v2m2 = u1m1 + u2m2
 	* v1 + u1 = v2 + u2
+	*
 	* u2 = v1 + u1 - v2
+	* 
 	* v1m1 + v2m2 = u1m1 + (v1 + u1 - v2)m2
 	* v1m1 + v2m2 = u1m1 + v1m2 + u1m2 - v2m2
-	* v1m1 + v2m2 + v2m2 + v1m2 = u1m1 + u1m2
-	*
-	* u1 = (v1m1 + 2v2m2 + v1m2) / (m1 + m2)
-	* u2 = v1 + u1 - v2
+	* v1m1 + v2m2 - v1m2 + v2m2 = u1m1 + u1m2
+	* u1(m1 + m2) = v1m1 + v2m2 - v1m2 + v2m2
+	* 
+	* u1 = v1m1 + v2m2 - v1m2 + v2m2 / (m1 + m2)
 	*/
 	SpeedsAfterCollision calculateCollisionVelocities(float m1, float m2, glm::vec3 v1, glm::vec3 v2, glm::vec3 normal);
 	/*
@@ -124,4 +126,12 @@ private:
 	* returns map of object ids and object vertices
 	*/
 	std::unordered_map<int, std::vector<glm::vec3>> transformVertices();
+
+
+	void createCollisionPoints(std::unordered_map<int, std::vector<CollisionPoint>>& cpMap, CollisionInfo& info);
+
+	/*
+	* Set GameObjects velocity after the collision using the collisionpoints
+	*/
+	void setGameObjectsVelocityAfterCollision(glm::vec3& linearVelocity, glm::vec3& rotation, std::vector<CollisionPoint>& collisionPoints);
 };
