@@ -15,6 +15,7 @@ private:
 
 	struct CollisionInfo {
 		bool collides;
+		float shortestDistFromCollisionPointToEdgePoint;
 		float separation;
 		std::vector<glm::vec3>edgePoints;
 		std::vector<glm::vec3>collisionPoints;
@@ -46,6 +47,8 @@ private:
 		glm::vec3 pos;
 		glm::vec3 velocity;
 		glm::vec3 centroid;
+		float mass;
+		float separation;
 	};
 
 
@@ -128,10 +131,19 @@ private:
 	std::unordered_map<int, std::vector<glm::vec3>> transformVertices();
 
 
+	/*
+	* creates collisionpoint objects from CollisionInfo
+	*/
 	void createCollisionPoints(std::unordered_map<int, std::vector<CollisionPoint>>& cpMap, CollisionInfo& info);
+
+	/*
+	* uses only solid sphere inertia for now
+	*/
+	float calculateEnergyFromRotation(float mass, const glm::vec3& rotVelocity, float radius);
+	float calculateEnergyFromLinearVelocity(float mass, const glm::vec3& linearVelocity);
 
 	/*
 	* Set GameObjects velocity after the collision using the collisionpoints
 	*/
-	void setGameObjectsVelocityAfterCollision(glm::vec3& linearVelocity, glm::vec3& rotation, std::vector<CollisionPoint>& collisionPoints);
+	void setGameObjectsVelocityAfterCollision(glm::vec3& linearVelocity, glm::vec3& rotation, std::vector<CollisionPoint>& collisionPoints, float mass, float energyRetention, bool rotates);
 };

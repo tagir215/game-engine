@@ -187,8 +187,12 @@ void CollisionSystemTest::testCalculateCollisionVelocities()
 
     CollisionSystem::SpeedsAfterCollision result = cs->calculateCollisionVelocities(m1, m2, v1, v2, normal);
 
-	std::cout << " speed1: " << result.v1;
-	std::cout << " speed2: " << result.v2;
+	std::cout << " speed1: x: " << result.v1.x;
+	std::cout << " speed1: y: " << result.v1.y;
+	std::cout << " speed1: z: " << result.v1.z;
+	std::cout << " speed2: x: " << result.v2.x;
+	std::cout << " speed2: y: " << result.v2.y;
+	std::cout << " speed2: z: " << result.v2.z;
 	std::cout << std::endl;
 }
 
@@ -225,7 +229,7 @@ void CollisionSystemTest::testSetGameObjectsVelocityAfterCollision()
 	//collisionPoints.push_back(CollisionSystem::CollisionPoint(glm::vec3(1, 0, 0), glm::vec3(0, 1, 0)));
 	collisionPoints.push_back(CollisionSystem::CollisionPoint(glm::vec3(1, 1, 0), glm::vec3(-0.5, 0, 0),centroid));
 	
-	cs->setGameObjectsVelocityAfterCollision(linearVelocity,rotation,collisionPoints);
+	cs->setGameObjectsVelocityAfterCollision(linearVelocity,rotation,collisionPoints,1,true);
 	std::cout << " linearVelocity x:" <<  linearVelocity.x;
 	std::cout << " linearVelocity y:" <<  linearVelocity.y;
 	std::cout << " linearVelocity z:" <<  linearVelocity.z;

@@ -9,7 +9,7 @@ GameObject* Level1Factory::buildGround(Scene* scene, float mass, glm::vec3 pos, 
 	ground->setMeshComponent(mesh);
 	ground->createComponent<ShaderComponent>(1);
 	ground->createComponent<TransformComponent>(pos,rot,scl);
-	ground->createComponent<PhysicsComponent>(mass, true, 0.4f, false, 0, glm::vec3(ground->getTransformComponent()->scale.x, ground->getTransformComponent()->scale.y, 1), true);
+	ground->createComponent<PhysicsComponent>(mass, true, 0.4f, false, 0, glm::vec3(ground->getTransformComponent()->scale.x*2, ground->getTransformComponent()->scale.x*2, 1), true);
 	return ground;
 }
 
@@ -21,7 +21,7 @@ GameObject* Level1Factory::buildBox(Scene* scene, float mass, glm::vec3 pos, glm
 	box->createComponent<ShaderComponent>(1);
 	box->createComponent<VelocityComponent>(0, 0, 0);
 	box->createComponent<TransformComponent>(pos,rot,scl);
-	box->createComponent<PhysicsComponent>(mass, true,0.4f,true,0.5f, glm::vec3(box->getTransformComponent()->scale.x, box->getTransformComponent()->scale.y, 0), true);
+	box->createComponent<PhysicsComponent>(mass, true,0.4f,true,0.5f, glm::vec3(box->getTransformComponent()->scale.x*2, box->getTransformComponent()->scale.x*2, 0), true);
 	return box;
 }
 
@@ -34,7 +34,7 @@ GameObject* Level1Factory::buildPlayer(Scene* scene, glm::vec3 pos, glm::vec3 ro
 	player->setTextureComponent(texture);
 	player->setMeshComponent(mesh);
 	player->createComponent<TransformComponent>(pos, rot, scl);
-	player->createComponent<PhysicsComponent>(150, true, 0.5f, true, 0, scl, false);
+	player->createComponent<PhysicsComponent>(150, true, 0.3f, true, 0, scl, false);
 	player->createComponent<InputComponent>();
 	player->createComponent<VelocityComponent>(0, 0, 0);
 	player->createComponent<ShaderComponent>(0);

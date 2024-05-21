@@ -36,6 +36,7 @@ CollisionSystem::CollisionInfo CollisionSystem::findSeparation(
 	collisionInfo.centroidB = calculateCentroid(verticesB);
 
 	float mostAlignedNormal = -std::numeric_limits<float>::max();
+	float smallestSeparation = std::numeric_limits<float>::max();
 
 	int j = verticesA.size() - 1;
 	for (int i = 0; i < verticesA.size(); ++i) {
@@ -45,7 +46,7 @@ CollisionSystem::CollisionInfo CollisionSystem::findSeparation(
 		float z = -1;
 		if (rot != 0) z = 1;
 		glm::vec3 zvec(0, 0, z);
-		glm::vec3 normal = glm::cross(edge, zvec);
+		glm::vec3 normal = glm::normalize(glm::cross(edge, zvec));
 		glm::vec3 vecToCentroid = collisionInfo.centroidB - vertex1;
 
 		float dotVecToCentroidAndNormal = glm::dot(normal, vecToCentroid);
@@ -54,15 +55,20 @@ CollisionSystem::CollisionInfo CollisionSystem::findSeparation(
 		for (int j = 0; j < verticesB.size(); ++j) {
 			glm::vec3 vertexB = verticesB[j];
 			glm::vec3 vecToB = vertexB - vertex1;
-			float dp = glm::dot(vecToB, normal);
-			if (dp < smallestDp) {
-				smallestDp = dp;
+			float dotVecToBAndNormal = glm::dot(vecToB, normal);
+			if (dotVecToBAndNormal < smallestDp) {
+				smallestDp = dotVecToBAndNormal;
 			}
+			float sep = glm::length(normal * dotVecToBAndNormal);
 
-			if (dp <= 0 && dotVecToCentroidAndNormal > mostAlignedNormal) {
+			if (dotVecToBAndNormal <= 0 
+				&& dotVecToCentroidAndNormal > mostAlignedNormal
+				&& sep < smallestSeparation) 
+			{
+				smallestSeparation = sep;
 				mostAlignedNormal = dotVecToCentroidAndNormal;
+				collisionInfo.separation = sep;
 				collisionInfo.collisionNormal = normal;
-				collisionInfo.separation = smallestDp;
 				collisionInfo.edgePoints = std::vector<glm::vec3>();
 				collisionInfo.edgePoints.push_back(vertex1);
 				collisionInfo.edgePoints.push_back(vertex2);
@@ -76,6 +82,18 @@ CollisionSystem::CollisionInfo CollisionSystem::findSeparation(
 		}
 		j = i;
 	}
+
+	float shortestDistance = std::numeric_limits<float>::max();
+	if (collisionInfo.collides) {
+		for (glm::vec3& cp : collisionInfo.collisionPoints) {
+			float distToEdge1 = glm::distance(cp, collisionInfo.edgePoints[0]);
+			float distToEdge2 = glm::distance(cp, collisionInfo.edgePoints[1]);
+			if (distToEdge1 < shortestDistance) shortestDistance = distToEdge1;
+			if (distToEdge2 < shortestDistance) shortestDistance = distToEdge2;
+		}
+	}
+	collisionInfo.shortestDistFromCollisionPointToEdgePoint = shortestDistance;
+
 	return collisionInfo;
 }
 
@@ -87,8 +105,7 @@ bool CollisionSystem::checkCollisionUsingBoundingVolumes(glm::vec3 posA, glm::ve
 	if (distX < xx && distY < yy) {
 		return true;
 	}
-	//return false;
-	return true;
+	return false;
 }
 
 CollisionSystem::CollisionInfo CollisionSystem::checkCollisionUsingSAT(GameObject* object1, GameObject* object2
@@ -105,8 +122,7 @@ CollisionSystem::CollisionInfo CollisionSystem::checkCollisionUsingSAT(GameObjec
 		glm::vec3 mov1 = object1->getVelocityComponent().linearVelocity;
 		glm::vec3 mov2 = object2->getVelocityComponent().linearVelocity;
 
-		if (glm::distance(collisionA.edgePoints[0],collisionA.edgePoints[1])
-			> glm::distance(collisionB.edgePoints[0],collisionB.edgePoints[1] )) {
+		if (collisionA.shortestDistFromCollisionPointToEdgePoint > collisionB.shortestDistFromCollisionPointToEdgePoint) {
 			collisionA.objectA = object1;
 			collisionA.objectB = object2;
 			return collisionA;
@@ -172,6 +188,7 @@ bool CollisionSystem::isRotatingTowards(glm::vec3 normal, glm::vec3 rotVec) {
 
 
 void CollisionSystem::addEnergyLoss(glm::vec3& vec, const glm::vec3& normal, float retention) {
+	if (glm::length(vec) == 0) return;
 	glm::vec3 n = glm::normalize(normal) * (1 - retention);
 	vec -= glm::dot(vec, n) * n;
 }
@@ -230,7 +247,7 @@ glm::vec3 CollisionSystem::combineWithRotation(glm::vec3& objLinearVelocity, glm
 	glm::vec3 normal = glm::normalize(collisionInfo.collisionNormal);
 	glm::vec3 rotVecProjection = glm::dot(normal, rotVec) * normal;
 
-	glm::vec3 velocityRotationAdded = rotVecProjection + objLinearVelocity;
+	glm::vec3 velocityRotationAdded = rotVecProjection  + objLinearVelocity;
 	return velocityRotationAdded;
 }
 
@@ -238,16 +255,19 @@ glm::vec3 CollisionSystem::combineWithRotation(glm::vec3& objLinearVelocity, glm
 CollisionSystem::SpeedsAfterCollision CollisionSystem::calculateCollisionVelocities(
 	float m1, float m2, glm::vec3 v1, glm::vec3 v2, glm::vec3 normal)
 {
-	glm::vec3 n = glm::normalize(normal);
-	glm::vec3 v1n = glm::dot(v1, n) * n;
-	glm::vec3 v2n = glm::dot(v2, n) * n;
+	glm::vec3 v1n = glm::dot(v1, normal) * normal;
+	glm::vec3 v2n = glm::dot(v2, normal) * normal;
 
 	//u1 = v1m1 + v2m2 - v1m2 + v2m2 / (m1 + m2)
-	glm::vec3 v1f = (v1n*m1 + v2n*m2 - v1n*m2 + v2*m2) / (m1 + m2);
+	glm::vec3 v1f = (v1n*m1 + v2n*m2 - v1n*m2 + v2n*m2) / (m1 + m2);
 	//u2 = v1 + u1 - v2
 	glm::vec3 v2f = v1n + v1f - v2n;
 
-	return SpeedsAfterCollision(glm::length(v1f), glm::length(v2f));
+
+	float speed1 = glm::length(v1f);
+	float speed2 = glm::length(v2f);
+
+	return SpeedsAfterCollision(speed1,speed2);
 }
 
 
@@ -401,17 +421,19 @@ void CollisionSystem::createCollisionPoints(std::unordered_map<int, std::vector<
 			info.collisionNormal
 		);
 
-		const glm::vec3 normal = glm::normalize(info.collisionNormal);
-
 		const CollisionPoint collisionPointA(
 			cp,
-			-normal * speedsAfterCollision.v1,
-			info.centroidA
+			-info.collisionNormal * speedsAfterCollision.v1,
+			info.centroidA,
+			info.objectB->getPhysicsComponent().mass,
+			info.separation
 		);
 		const CollisionPoint collisionPointB(
 			cp,
-			normal * speedsAfterCollision.v2,
-			info.centroidB
+			info.collisionNormal * speedsAfterCollision.v2,
+			info.centroidB,
+			info.objectA->getPhysicsComponent().mass,
+			info.separation
 		);
 
 		collisionMap[info.objectA->getId()].push_back(collisionPointA);
@@ -421,29 +443,65 @@ void CollisionSystem::createCollisionPoints(std::unordered_map<int, std::vector<
 }
 
 
-void CollisionSystem::setGameObjectsVelocityAfterCollision(glm::vec3& linearVelocity, glm::vec3& rotation, std::vector<CollisionPoint>& collisionPoints)
+float CollisionSystem::calculateEnergyFromRotation(float mass, const glm::vec3& rotVelocity, float radius) {
+	float INERTIA_CONSTANT_THING = 0.5f;
+	float inertia = INERTIA_CONSTANT_THING * mass * radius * radius;
+	float energy = inertia * rotVelocity.z * rotVelocity.z;
+	return energy;
+}
+
+float CollisionSystem::calculateEnergyFromLinearVelocity(float mass, const glm::vec3& linearVelocity) {
+	float energy = 0.5f * mass * std::pow(glm::length(linearVelocity),2);
+	return energy;
+}
+
+
+void CollisionSystem::setGameObjectsVelocityAfterCollision(glm::vec3& linearVelocity, glm::vec3& rotation, std::vector<CollisionPoint>& collisionPoints, float mass, float energyRetention, bool rotates)
 {
 	glm::vec3 rotationalVecToAdd(0, 0, 0);
+	float temporaryRadiusLazyMathThing = 0;
 
-	for (int i = 0; i < collisionPoints.size(); ++i) {
+	float maxMass = 0;
+	for (CollisionPoint& point : collisionPoints) {
+		if (point.mass > maxMass) maxMass = point.mass;
+	}
 
-		CollisionPoint& cpA = collisionPoints[i];
-		glm::vec3 aToCentroid = cpA.centroid - cpA.pos;
-		glm::vec3 crossVec = glm::normalize(glm::cross(cpA.velocity, glm::vec3(0, 0, 1)));
+	if (rotates) {
 
-		glm::vec3 projectedCentroid = glm::dot(crossVec, aToCentroid) * crossVec;
-		float radius = glm::length(projectedCentroid);
-		bool aCausesClockwiseRotation = glm::dot(aToCentroid, crossVec) < 0;
+		for (int i = 0; i < collisionPoints.size(); ++i) {
 
-		if (aCausesClockwiseRotation) {
-			rotationalVecToAdd += glm::vec3(0, 0, glm::length(cpA.velocity)/radius);
-		}
-		else {
-			rotationalVecToAdd -= glm::vec3(0, 0, glm::length(cpA.velocity)/radius);
+			CollisionPoint& cpA = collisionPoints[i];
+			glm::vec3 aToCentroid = cpA.centroid - cpA.pos;
+			glm::vec3 crossVec = glm::normalize(glm::cross(cpA.velocity, glm::vec3(0, 0, 1)));
+
+			//glm::vec3 projectedCentroid = glm::dot(crossVec, aToCentroid) * crossVec;
+			//float radius = glm::length(projectedCentroid);
+			float radius = glm::length(aToCentroid);
+			if (radius > temporaryRadiusLazyMathThing) temporaryRadiusLazyMathThing = radius;
+			bool aCausesClockwiseRotation = glm::dot(aToCentroid, crossVec) < 0;
+
+			float weight = cpA.mass / maxMass;
+
+			if (aCausesClockwiseRotation) {
+				rotationalVecToAdd += glm::vec3(0, 0, (glm::length(cpA.velocity) / radius ) * weight);
+			}
+			else {
+				rotationalVecToAdd -= glm::vec3(0, 0, (glm::length(cpA.velocity) / radius ) * weight);
+			}
 		}
 
 	}
-	rotation.z = rotationalVecToAdd.z;
+
+	//hacky temporary fix
+	if (haveOppositeSigns(rotation.z, rotationalVecToAdd.z)) {
+		rotation.z = rotationalVecToAdd.z;
+	}
+	else {
+		rotation.z += rotationalVecToAdd.z;
+	}
+
+	//float rotationalEnergy = calculateEnergyFromRotation(mass, rotationalVecToAdd, temporaryRadiusLazyMathThing);
+	//float linearEnergy = calculateEnergyFromLinearVelocity(mass, linearVelocity) - rotationalEnergy;
 
 	for (int i = 0; i < collisionPoints.size(); ++i) {
 
@@ -453,30 +511,16 @@ void CollisionSystem::setGameObjectsVelocityAfterCollision(glm::vec3& linearVelo
 		bool aCausesClockwiseRotation = glm::dot(aToCentroid, crossVec) < 0;
 
 		glm::vec3 velANormalized(0, 0, 0);
-		if(glm::length(cpA.velocity) > 0)
+		if (glm::length(cpA.velocity) > 0)
 			velANormalized = glm::normalize(cpA.velocity);
 		glm::vec3 linearVelProjected = glm::dot(linearVelocity, velANormalized) * velANormalized;
 
 		glm::vec3 cpAVel(0, 0, 0);
-		if ((aCausesClockwiseRotation && rotationalVecToAdd.z < 0)
-			|| (!aCausesClockwiseRotation && rotationalVecToAdd.z > 0))
-		{
-			cpAVel = cpA.velocity;
-			glm::vec3 velToAdd = cpAVel - linearVelProjected;
-			if (glm::length(velToAdd) > 0) {
-				int a = 0;
-			}
-			linearVelocity += velToAdd;
-		}
-		else {
-			float lengthToReduce = std::abs(rotationalVecToAdd.z);
-			if (lengthToReduce < glm::length(cpA.velocity)) {
-				cpAVel = cpA.velocity - velANormalized * lengthToReduce;
-			}
-			else {
-				cpAVel = glm::vec3(0, 0, 0);
-			}
-		}
+		cpAVel = cpA.velocity;
+		glm::vec3 velToAdd = cpAVel - linearVelProjected;
+		addEnergyLoss(velToAdd, cpA.velocity, energyRetention);
+
+		linearVelocity += velToAdd;
 
 	}
 }
@@ -539,7 +583,10 @@ void CollisionSystem::onUpdate(float deltaTime) {
 		setGameObjectsVelocityAfterCollision(
 			obj->getVelocityComponent().linearVelocity,
 			obj->getVelocityComponent().rotation,
-			collisionPointMap[obj->getId()]
+			collisionPointMap[obj->getId()],
+			obj->getPhysicsComponent().mass,
+			obj->getPhysicsComponent().elasticity,
+			obj->getPhysicsComponent().rotates
 		);
 	}
 }
