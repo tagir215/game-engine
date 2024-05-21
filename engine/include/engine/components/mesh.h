@@ -21,6 +21,9 @@ public:
 	std::vector<float> getVertices() {
 		return vertices;
 	}
+	void setVertices(std::vector<float>vertices) {
+		this->vertices = vertices;
+	}
 
 	void updateTextureBuffer(std::vector<float> coords);
 	

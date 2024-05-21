@@ -18,3 +18,9 @@ target_include_directories(engine PUBLIC
   ${PROJECT_SOURCE_DIR}/ext/stb-master}
 )
 
+file(GLOB TEST_SOURCES "test/*.cpp")
+file(GLOB TEST_HEADERS "test/*.h")
+
+# TESTIT
+add_executable(engine_tests ${TEST_HEADERS} ${TEST_SOURCES})
+target_link_libraries(engine_tests PRIVATE engine)

@@ -12,34 +12,9 @@
 
 CollisionSystem::CollisionSystem(std::vector<GameObject*>& gameObjects) : SystemBase(gameObjects) {
 }
-const float PI = 3.14159265358979323846f;
 
 
-struct CollisionInfo {
-	bool collides;
-	float separation;
-	std::vector<glm::vec3>edgePoints;
-	std::vector<glm::vec3>collisionPoints;
-	glm::vec3 collisionNormal;
-	glm::vec3 centroidA;
-	glm::vec3 centroidB;
-	GameObject* objectA;
-	GameObject* objectB;
-};
-
-struct CollisionObjectInfo {
-	GameObject* obj;
-	glm::vec3 collisionPoint;
-	glm::vec3 velocityAfterCollision;
-	glm::vec3 centroid;
-	glm::vec3 normal;
-	bool rotates;
-	float friction;
-};
-
-std::unordered_map<int, CollisionObjectInfo>collisionObjectInfoMap;
-
-glm::vec3 calculateCentroid(std::vector<glm::vec3>& vertices) {
+glm::vec3 CollisionSystem::calculateCentroid(std::vector<glm::vec3>& vertices) {
 	glm::vec3 centroid(0, 0, 0);
 	for (glm::vec3 vertex : vertices) {
 		centroid.x += vertex.x;
@@ -52,53 +27,16 @@ glm::vec3 calculateCentroid(std::vector<glm::vec3>& vertices) {
 	return centroid;
 }
 
-/*
-* vertex1 and vertex2 are vertices of an edge from object A
-* verticesB is a list of all vertices from object B
-* onEdgeScalar is negative if collisionPoint is within range of the edge
-* normalAndVertex if negative objB is facing the normal
-*/
-void setCollisionPoints(CollisionInfo& collisionInfo, glm::vec3& vertex1, glm::vec3& vertex2, std::vector<glm::vec3>& verticesB, glm::vec3& normal) {
-	glm::vec3 v1ToV2 = vertex2 - vertex1;
-	glm::vec3 v2ToV1 = vertex1 - vertex2;
 
-	collisionInfo.collisionPoints = std::vector<glm::vec3>();
-
-	for (glm::vec3 vertexB : verticesB) {
-		glm::vec3 v1ToB = vertexB - vertex1;
-		glm::vec3 v2ToB = vertexB - vertex2;
-		float onEdgeScalar = glm::dot(v1ToB, v2ToB);
-		float normalAndVertex = glm::dot(v1ToB, normal);
-		if (normalAndVertex <= 0 && onEdgeScalar < 5) {
-			collisionInfo.collisionPoints.push_back(vertexB);
-		}
-	}
-
-	if (collisionInfo.collisionPoints.size() > 0) {
-		float distToCentroid = glm::distance(collisionInfo.collisionPoints[0], collisionInfo.centroidB);
-		float v1ToCentroid = glm::distance(vertex1, collisionInfo.centroidB);
-		float v2ToCentroid = glm::distance(vertex2, collisionInfo.centroidB);
-
-		if (v1ToCentroid < distToCentroid) {
-			collisionInfo.collisionPoints.push_back(vertex1);
-		}
-		else if (v2ToCentroid < distToCentroid) {
-			collisionInfo.collisionPoints.push_back(vertex2);
-		}
-	}
-
-}
-
-
-/*
-* verticesA create the edges, and verticesB are the vertices of object B that are all compared to each edge
-*/
-CollisionInfo findSeparation(std::vector<glm::vec3>& verticesA, std::vector<glm::vec3>& verticesB, float rot) {
+CollisionSystem::CollisionInfo CollisionSystem::findSeparation(
+	std::vector<glm::vec3>& verticesA, std::vector<glm::vec3>& verticesB, float rot)
+{
 	CollisionInfo collisionInfo(true);
 	collisionInfo.centroidA = calculateCentroid(verticesA);
 	collisionInfo.centroidB = calculateCentroid(verticesB);
 
 	float mostAlignedNormal = -std::numeric_limits<float>::max();
+	float smallestSeparation = std::numeric_limits<float>::max();
 
 	int j = verticesA.size() - 1;
 	for (int i = 0; i < verticesA.size(); ++i) {
@@ -108,7 +46,7 @@ CollisionInfo findSeparation(std::vector<glm::vec3>& verticesA, std::vector<glm:
 		float z = -1;
 		if (rot != 0) z = 1;
 		glm::vec3 zvec(0, 0, z);
-		glm::vec3 normal = glm::cross(edge, zvec);
+		glm::vec3 normal = glm::normalize(glm::cross(edge, zvec));
 		glm::vec3 vecToCentroid = collisionInfo.centroidB - vertex1;
 
 		float dotVecToCentroidAndNormal = glm::dot(normal, vecToCentroid);
@@ -117,15 +55,20 @@ CollisionInfo findSeparation(std::vector<glm::vec3>& verticesA, std::vector<glm:
 		for (int j = 0; j < verticesB.size(); ++j) {
 			glm::vec3 vertexB = verticesB[j];
 			glm::vec3 vecToB = vertexB - vertex1;
-			float dp = glm::dot(vecToB, normal);
-			if (dp < smallestDp) {
-				smallestDp = dp;
+			float dotVecToBAndNormal = glm::dot(vecToB, normal);
+			if (dotVecToBAndNormal < smallestDp) {
+				smallestDp = dotVecToBAndNormal;
 			}
+			float sep = glm::length(normal * dotVecToBAndNormal);
 
-			if (dp <= 0 && dotVecToCentroidAndNormal > mostAlignedNormal) {
+			if (dotVecToBAndNormal <= 0 
+				&& dotVecToCentroidAndNormal > mostAlignedNormal
+				&& sep < smallestSeparation) 
+			{
+				smallestSeparation = sep;
 				mostAlignedNormal = dotVecToCentroidAndNormal;
+				collisionInfo.separation = sep;
 				collisionInfo.collisionNormal = normal;
-				collisionInfo.separation = smallestDp;
 				collisionInfo.edgePoints = std::vector<glm::vec3>();
 				collisionInfo.edgePoints.push_back(vertex1);
 				collisionInfo.edgePoints.push_back(vertex2);
@@ -139,31 +82,33 @@ CollisionInfo findSeparation(std::vector<glm::vec3>& verticesA, std::vector<glm:
 		}
 		j = i;
 	}
+
+	float shortestDistance = std::numeric_limits<float>::max();
+	if (collisionInfo.collides) {
+		for (glm::vec3& cp : collisionInfo.collisionPoints) {
+			float distToEdge1 = glm::distance(cp, collisionInfo.edgePoints[0]);
+			float distToEdge2 = glm::distance(cp, collisionInfo.edgePoints[1]);
+			if (distToEdge1 < shortestDistance) shortestDistance = distToEdge1;
+			if (distToEdge2 < shortestDistance) shortestDistance = distToEdge2;
+		}
+	}
+	collisionInfo.shortestDistFromCollisionPointToEdgePoint = shortestDistance;
+
 	return collisionInfo;
 }
 
-/*
-* check if there's collision using bounding volumes
-*/
-bool checkCollisionUsingBoundingVolumes(GameObject* object1, GameObject* object2) {
-	float distX = glm::abs(object1->getTransformComponent()->absolutePosition().x - object2->getTransformComponent()->absolutePosition().x);
-	float distY = glm::abs(object1->getTransformComponent()->absolutePosition().y - object2->getTransformComponent()->absolutePosition().y);
-	float xx = object1->getPhysicsComponent().boundingVolume.x / 2 + object2->getPhysicsComponent().boundingVolume.x / 2;
-	float yy = object1->getPhysicsComponent().boundingVolume.y / 2 + object2->getPhysicsComponent().boundingVolume.y / 2;
+bool CollisionSystem::checkCollisionUsingBoundingVolumes(glm::vec3 posA, glm::vec3 boxA, glm::vec3 posB, glm::vec3 boxB) {
+	float distX = glm::abs(posA.x - posB.x);
+	float distY = glm::abs(posA.y - posB.y);
+	float xx = boxA.x / 2 + boxB.x / 2;
+	float yy = boxA.y / 2 + boxB.y / 2;
 	if (distX < xx && distY < yy) {
 		return true;
 	}
 	return false;
 }
 
-/*
-* checks if there's collision using the find separation method, and return a CollisionInfo object
-* with info about the collision. Calculates 2 separate CollisionInfo objects since in each CollisionInfo
-* struct there's objectA that represents the edges and objectB that represents the compared vertices.
-* CollisionInfo objects contain info about the separation value, and the collisionInfo object with greater
-* separation (that is still in collision, which means it can't be a positive value) is returned from the method
-*/
-CollisionInfo checkCollisionUsingSAT(GameObject* object1, GameObject* object2
+CollisionSystem::CollisionInfo CollisionSystem::checkCollisionUsingSAT(GameObject* object1, GameObject* object2
 	, std::unordered_map<int, std::vector<glm::vec3>>& transformedVertices) {
 	std::vector<glm::vec3>vertices1 = transformedVertices[object1->getId()];
 	std::vector<glm::vec3>vertices2 = transformedVertices[object2->getId()];
@@ -177,7 +122,7 @@ CollisionInfo checkCollisionUsingSAT(GameObject* object1, GameObject* object2
 		glm::vec3 mov1 = object1->getVelocityComponent().linearVelocity;
 		glm::vec3 mov2 = object2->getVelocityComponent().linearVelocity;
 
-		if (collisionA.collisionPoints.size() > collisionB.collisionPoints.size()) {
+		if (collisionA.shortestDistFromCollisionPointToEdgePoint > collisionB.shortestDistFromCollisionPointToEdgePoint) {
 			collisionA.objectA = object1;
 			collisionA.objectB = object2;
 			return collisionA;
@@ -190,31 +135,65 @@ CollisionInfo checkCollisionUsingSAT(GameObject* object1, GameObject* object2
 	}
 }
 
-glm::vec3 calculateMirrorVec(glm::vec3 normal, glm::vec3 vec) {
-	glm::vec3 projection = glm::dot(vec, normal) * normal;
-	glm::vec3 mirrorVector = projection + projection - vec;
+void CollisionSystem::setCollisionPoints(CollisionInfo& collisionInfo, glm::vec3& vertex1, glm::vec3& vertex2, std::vector<glm::vec3>& verticesB, glm::vec3& normal) {
 
-	return mirrorVector;
+	collisionInfo.collisionPoints = std::vector<glm::vec3>();
+
+	for (glm::vec3 vertexB : verticesB) {
+		glm::vec3 v1ToB = vertexB - vertex1;
+		float normalAndVertex = glm::dot(v1ToB, normal);
+		if (normalAndVertex <= 0) {
+			glm::vec3 v2ToB = vertexB - vertex2;
+			glm::vec3 BToV1 = vertex1 - vertexB;
+			glm::vec3 BToV2 = vertex2 - vertexB;
+			glm::vec3 v2ToV1 = vertex1 - vertex2;
+			glm::vec3 v1ToV2 = vertex2 - vertex1;
+			float onEdgeScalarB = glm::dot(v1ToB, v2ToB);
+			float onEdgeScalarV1 = glm::dot(v2ToV1, BToV1);
+			float onEdgeScalarV2 = glm::dot(v1ToV2, BToV2);
+			if (onEdgeScalarB <= 0)
+				collisionInfo.collisionPoints.push_back(vertexB);
+			else if (onEdgeScalarV1 < 0)
+				collisionInfo.collisionPoints.push_back(vertex1);
+			else if (onEdgeScalarV2 < 0)
+				collisionInfo.collisionPoints.push_back(vertex2);
+		}
+	}
+
+	// old logic tht i don't think mkes any snse
+	//if (collisionInfo.collisionPoints.size() > 0) {
+	//	float distToCentroid = glm::distance(collisionInfo.collisionPoints[0], collisionInfo.centroidB);
+	//	float v1ToCentroid = glm::distance(vertex1, collisionInfo.centroidB);
+	//	float v2ToCentroid = glm::distance(vertex2, collisionInfo.centroidB);
+
+	//	if (v1ToCentroid < distToCentroid) {
+	//		collisionInfo.collisionPoints.push_back(vertex1);
+	//	}
+	//	else if (v2ToCentroid < distToCentroid) {
+	//		collisionInfo.collisionPoints.push_back(vertex2);
+	//	}
+	//}
+
 }
 
-glm::vec3 calculateRotationVector(glm::vec3 rotation, glm::vec3 angleVector) {
+glm::vec3 CollisionSystem::calculateRotationalVelocity(glm::vec3 rotation, glm::vec3 angleVector) {
 	glm::vec3 zvector(0, 0, rotation.z);
 	return glm::cross(angleVector, zvector);
 }
 
-bool isRotatingTowards(glm::vec3 normal, glm::vec3 rotVec) {
+bool CollisionSystem::isRotatingTowards(glm::vec3 normal, glm::vec3 rotVec) {
 	float dot = glm::dot(normal, rotVec);
 	return dot < 0;
 }
 
 
-void addEnergyLoss(glm::vec3& vec, const glm::vec3& normal, float retention) {
+void CollisionSystem::addEnergyLoss(glm::vec3& vec, const glm::vec3& normal, float retention) {
+	if (glm::length(vec) == 0) return;
 	glm::vec3 n = glm::normalize(normal) * (1 - retention);
 	vec -= glm::dot(vec, n) * n;
-
 }
 
-void addCollisionEnergy(CollisionObjectInfo& collisionObjectInfo, float retention) {
+void CollisionSystem::addCollisionEnergy(CollisionObjectInfo& collisionObjectInfo, float retention) {
 	glm::vec3 collisionDirection = glm::normalize(collisionObjectInfo.velocityAfterCollision);
 	glm::vec3 projectionVelocity = glm::dot(collisionObjectInfo.obj->getVelocityComponent().linearVelocity, collisionDirection) * collisionDirection;
 	//float lengthOfToAddVector = std::abs(glm::length(projectionVelocity) - glm::length(collisionInfo2.velocity1));
@@ -224,13 +203,13 @@ void addCollisionEnergy(CollisionObjectInfo& collisionObjectInfo, float retentio
 	collisionObjectInfo.obj->getVelocityComponent().linearVelocity += toAddVector;
 }
 
-bool haveOppositeSigns(float x, float y) {
+bool CollisionSystem::haveOppositeSigns(float x, float y) {
 	int signX = std::signbit(x);
 	int signY = std::signbit(y);
 	return signX != signY;
 }
 
-void setVelocities(CollisionObjectInfo& collisionObjectInfo) {
+void CollisionSystem::setVelocities(CollisionObjectInfo& collisionObjectInfo) {
 	if (glm::length(collisionObjectInfo.velocityAfterCollision) == 0) {
 		return;
 	}
@@ -261,64 +240,38 @@ void setVelocities(CollisionObjectInfo& collisionObjectInfo) {
 
 }
 
-/*
-* add rotation vector to the uhh velocity thing
-*/
-glm::vec3 combineWithRotation(GameObject* obj, CollisionInfo& collisionInfo, glm::vec3 collisionPointCentroid) {
-	glm::vec3 collisionPointAngleVector = glm::normalize(collisionInfo.centroidB - collisionPointCentroid);
-	glm::vec3 rotVec = calculateRotationVector(obj->getVelocityComponent().rotation, collisionPointAngleVector);
+glm::vec3 CollisionSystem::combineWithRotation(glm::vec3& objLinearVelocity, glm::vec3& objRotation, CollisionInfo& collisionInfo, glm::vec3 centroid) {
+	glm::vec3 collisionPointAngleVector = glm::normalize(collisionInfo.centroidB - centroid);
+	glm::vec3 rotVec = calculateRotationalVelocity(objRotation, collisionPointAngleVector);
 
 	glm::vec3 normal = glm::normalize(collisionInfo.collisionNormal);
 	glm::vec3 rotVecProjection = glm::dot(normal, rotVec) * normal;
 
-	glm::vec3 velocityRotationAdded = rotVecProjection + obj->getVelocityComponent().linearVelocity;
+	glm::vec3 velocityRotationAdded = rotVecProjection  + objLinearVelocity;
 	return velocityRotationAdded;
 }
 
-struct SpeedsAfterCollision {
-	float v1;
-	float v2;
-};
-struct DirectionsAfterCollision {
-	glm::vec3 vecA;
-	glm::vec3 vecB;
-};
-struct CollisionPoint {
-	glm::vec3 pos;
-	glm::vec3 velocity;
-};
 
-/*
-* calculates Speeds of both objects after the collision
-* v1m1 + v2m2 = u1m1 + u2m2
-* v1 + u1 = v2 + u2
-* u2 = v1 + u1 - v2
-* v1m1 + v2m2 = u1m1 + (v1 + u1 - v2)m2
-* v1m1 + v2m2 = u1m1 + v1m2 + u1m2 - v2m2
-* v1m1 + v2m2 + v2m2 + v1m2 = u1m1 + u1m2
-*
-* u1 = (v1m1 + 2v2m2 + v1m2) / (m1 + m2)
-* u2 = v1 + u1 - v2
-*/
-SpeedsAfterCollision calculateCollisionVelocities(float m1, float m2, glm::vec3 v1, glm::vec3 v2, glm::vec3 normal) {
-	glm::vec3 n = glm::normalize(normal);
-	glm::vec3 v1n = glm::dot(v1, n) * n;
-	glm::vec3 v2n = glm::dot(v2, n) * n;
+CollisionSystem::SpeedsAfterCollision CollisionSystem::calculateCollisionVelocities(
+	float m1, float m2, glm::vec3 v1, glm::vec3 v2, glm::vec3 normal)
+{
+	glm::vec3 v1n = glm::dot(v1, normal) * normal;
+	glm::vec3 v2n = glm::dot(v2, normal) * normal;
 
-	glm::vec3 v1f = (v1n * m1 + v2n * m2 + v2n * m2 + v1n * m2) / (m1 + m2);
-	glm::vec3 v2f = (v1n + v2n - v1f);
+	//u1 = v1m1 + v2m2 - v1m2 + v2m2 / (m1 + m2)
+	glm::vec3 v1f = (v1n*m1 + v2n*m2 - v1n*m2 + v2n*m2) / (m1 + m2);
+	//u2 = v1 + u1 - v2
+	glm::vec3 v2f = v1n + v1f - v2n;
 
-	if (glm::length(v1f) == 200 && glm::length(v2f) == 400) {
-		int wtf = 0;
-	}
-	return SpeedsAfterCollision(glm::length(v1f), glm::length(v2f));
+
+	float speed1 = glm::length(v1f);
+	float speed2 = glm::length(v2f);
+
+	return SpeedsAfterCollision(speed1,speed2);
 }
 
-/*
-* calculates directions of each object after the collision
-* used to be more complex but i realized at some point that i can just add the -normal to the original velocity
-*/
-DirectionsAfterCollision calculateDirections(CollisionInfo& collisionInfo) {
+
+CollisionSystem::DirectionsAfterCollision CollisionSystem::calculateDirections(CollisionInfo& collisionInfo) {
 	//glm::vec3 vA = collisionInfo.objectA->getVelocity().velocity;
 	//glm::vec3 vB = collisionInfo.objectB->getVelocity().velocity;
 	glm::vec3 normal = glm::normalize(collisionInfo.collisionNormal);
@@ -339,12 +292,7 @@ DirectionsAfterCollision calculateDirections(CollisionInfo& collisionInfo) {
 	return DirectionsAfterCollision(mirrorVectorA, mirrorVectorB);
 }
 
-/*
-* Changes objects Velocity components based on the type of collision.
-* objA is the collisionObject which's edge collides with the B
-* objB is the collisionObject that collides with the edge of the A (if there's more than 1 collisionPoint objB technically also collides with an edge)
-*/
-void setForces(CollisionInfo& collisionInfo) {
+void CollisionSystem::setForces(CollisionInfo& collisionInfo) {
 	if (collisionInfo.collisionPoints.size() == 0) {
 		return;
 	}
@@ -359,8 +307,18 @@ void setForces(CollisionInfo& collisionInfo) {
 	glm::vec3 normal = glm::normalize(collisionInfo.collisionNormal);
 	glm::vec3 collisionPointCentroid = calculateCentroid(collisionInfo.collisionPoints);
 
-	glm::vec3 velocityRotationAddedA = combineWithRotation(objA, collisionInfo, collisionPointCentroid);
-	glm::vec3 velocityRotationAddedB = combineWithRotation(objB, collisionInfo, collisionPointCentroid);
+	glm::vec3 velocityRotationAddedA = combineWithRotation(
+		objA->getVelocityComponent().linearVelocity, 
+		objA->getVelocityComponent().rotation, 
+		collisionInfo, 
+		collisionPointCentroid
+	);
+	glm::vec3 velocityRotationAddedB = combineWithRotation(
+		objB->getVelocityComponent().linearVelocity, 
+		objB->getVelocityComponent().rotation, 
+		collisionInfo, 
+		collisionPointCentroid
+	);
 
 	SpeedsAfterCollision speedsAfterCollision = calculateCollisionVelocities(
 		objA->getPhysicsComponent().mass,
@@ -371,6 +329,7 @@ void setForces(CollisionInfo& collisionInfo) {
 	);
 
 	DirectionsAfterCollision directionsAfterCollision = calculateDirections(collisionInfo);
+
 
 	glm::vec3 collisionVecA(0, 0, 0);
 	if (glm::length(directionsAfterCollision.vecA) > 0)
@@ -412,10 +371,6 @@ void setForces(CollisionInfo& collisionInfo) {
 
 }
 
-/*
-* transform vertices of all objects with it's modelMatrix to get the true coordinates
-* returns map of object ids and object vertices
-*/
 std::unordered_map<int, std::vector<glm::vec3>> CollisionSystem::transformVertices() {
 	std::unordered_map<int, std::vector<glm::vec3>>map;
 	for (GameObject* object : gameObjects) {
@@ -441,6 +396,135 @@ std::unordered_map<int, std::vector<glm::vec3>> CollisionSystem::transformVertic
 	return map;
 }
 
+void CollisionSystem::createCollisionPoints(std::unordered_map<int, std::vector<CollisionPoint>>& collisionMap, CollisionInfo& info)
+{
+	for (const auto& cp : info.collisionPoints) {
+
+		glm::vec3 velocityRotationAddedA = combineWithRotation(
+			info.objectA->getVelocityComponent().linearVelocity,
+			info.objectA->getVelocityComponent().rotation,
+			info,
+			cp
+		);
+		glm::vec3 velocityRotationAddedB = combineWithRotation(
+			info.objectB->getVelocityComponent().linearVelocity,
+			info.objectB->getVelocityComponent().rotation,
+			info,
+			cp
+		);
+
+		SpeedsAfterCollision speedsAfterCollision = calculateCollisionVelocities(
+			info.objectA->getPhysicsComponent().mass,
+			info.objectB->getPhysicsComponent().mass,
+			velocityRotationAddedA,
+			velocityRotationAddedB,
+			info.collisionNormal
+		);
+
+		const CollisionPoint collisionPointA(
+			cp,
+			-info.collisionNormal * speedsAfterCollision.v1,
+			info.centroidA,
+			info.objectB->getPhysicsComponent().mass,
+			info.separation
+		);
+		const CollisionPoint collisionPointB(
+			cp,
+			info.collisionNormal * speedsAfterCollision.v2,
+			info.centroidB,
+			info.objectA->getPhysicsComponent().mass,
+			info.separation
+		);
+
+		collisionMap[info.objectA->getId()].push_back(collisionPointA);
+		collisionMap[info.objectB->getId()].push_back(collisionPointB);
+	}
+
+}
+
+
+float CollisionSystem::calculateEnergyFromRotation(float mass, const glm::vec3& rotVelocity, float radius) {
+	float INERTIA_CONSTANT_THING = 0.5f;
+	float inertia = INERTIA_CONSTANT_THING * mass * radius * radius;
+	float energy = inertia * rotVelocity.z * rotVelocity.z;
+	return energy;
+}
+
+float CollisionSystem::calculateEnergyFromLinearVelocity(float mass, const glm::vec3& linearVelocity) {
+	float energy = 0.5f * mass * std::pow(glm::length(linearVelocity),2);
+	return energy;
+}
+
+
+void CollisionSystem::setGameObjectsVelocityAfterCollision(glm::vec3& linearVelocity, glm::vec3& rotation, std::vector<CollisionPoint>& collisionPoints, float mass, float energyRetention, bool rotates)
+{
+	glm::vec3 rotationalVecToAdd(0, 0, 0);
+	float temporaryRadiusLazyMathThing = 0;
+
+	float maxMass = 0;
+	for (CollisionPoint& point : collisionPoints) {
+		if (point.mass > maxMass) maxMass = point.mass;
+	}
+
+	if (rotates) {
+
+		for (int i = 0; i < collisionPoints.size(); ++i) {
+
+			CollisionPoint& cpA = collisionPoints[i];
+			glm::vec3 aToCentroid = cpA.centroid - cpA.pos;
+			glm::vec3 crossVec = glm::normalize(glm::cross(cpA.velocity, glm::vec3(0, 0, 1)));
+
+			//glm::vec3 projectedCentroid = glm::dot(crossVec, aToCentroid) * crossVec;
+			//float radius = glm::length(projectedCentroid);
+			float radius = glm::length(aToCentroid);
+			if (radius > temporaryRadiusLazyMathThing) temporaryRadiusLazyMathThing = radius;
+			bool aCausesClockwiseRotation = glm::dot(aToCentroid, crossVec) < 0;
+
+			float weight = cpA.mass / maxMass;
+
+			if (aCausesClockwiseRotation) {
+				rotationalVecToAdd += glm::vec3(0, 0, (glm::length(cpA.velocity) / radius ) * weight);
+			}
+			else {
+				rotationalVecToAdd -= glm::vec3(0, 0, (glm::length(cpA.velocity) / radius ) * weight);
+			}
+		}
+
+	}
+
+	//hacky temporary fix
+	if (haveOppositeSigns(rotation.z, rotationalVecToAdd.z)) {
+		rotation.z = rotationalVecToAdd.z;
+	}
+	else {
+		rotation.z += rotationalVecToAdd.z;
+	}
+
+	//float rotationalEnergy = calculateEnergyFromRotation(mass, rotationalVecToAdd, temporaryRadiusLazyMathThing);
+	//float linearEnergy = calculateEnergyFromLinearVelocity(mass, linearVelocity) - rotationalEnergy;
+
+	for (int i = 0; i < collisionPoints.size(); ++i) {
+
+		const CollisionPoint& cpA = collisionPoints[i];
+		glm::vec3 aToCentroid = cpA.centroid - cpA.pos;
+		glm::vec3 crossVec = glm::normalize(glm::cross(cpA.velocity, glm::vec3(0, 0, 1)));
+		bool aCausesClockwiseRotation = glm::dot(aToCentroid, crossVec) < 0;
+
+		glm::vec3 velANormalized(0, 0, 0);
+		if (glm::length(cpA.velocity) > 0)
+			velANormalized = glm::normalize(cpA.velocity);
+		glm::vec3 linearVelProjected = glm::dot(linearVelocity, velANormalized) * velANormalized;
+
+		glm::vec3 cpAVel(0, 0, 0);
+		cpAVel = cpA.velocity;
+		glm::vec3 velToAdd = cpAVel - linearVelProjected;
+		addEnergyLoss(velToAdd, cpA.velocity, energyRetention);
+
+		linearVelocity += velToAdd;
+
+	}
+}
+
 /*
 * creates memo to avoid duplicate comparisons
 * creates map to get the true coordinates of each objects vertices after matrix calculations
@@ -451,7 +535,8 @@ std::unordered_map<int, std::vector<glm::vec3>> CollisionSystem::transformVertic
 */
 void CollisionSystem::onUpdate(float deltaTime) {
 	std::vector<std::vector<bool>>memo(gameObjects.size(), std::vector<bool>(gameObjects.size()));
-	std::unordered_map<int, std::vector<glm::vec3>>map = transformVertices();
+	std::unordered_map<int, std::vector<glm::vec3>>verticesMap = transformVertices();
+	std::unordered_map<int, std::vector<CollisionPoint>>collisionPointMap;
 
 	for (int i = 0; i < gameObjects.size(); ++i) {
 		if (!gameObjects[i]->getPhysicsComponent().collidable) continue;
@@ -459,7 +544,7 @@ void CollisionSystem::onUpdate(float deltaTime) {
 		for (int j = 0; j < gameObjects.size(); ++j) {
 			if (!gameObjects[j]->getPhysicsComponent().collidable) continue;
 			if (i == j) continue;
-			if (glm::length(gameObjects[i]->getVelocityComponent().linearVelocity) == 0 
+			if (glm::length(gameObjects[i]->getVelocityComponent().linearVelocity) == 0
 				&& glm::length(gameObjects[j]->getVelocityComponent().linearVelocity) == 0) continue;
 
 			int smaller = i < j ? i : j;
@@ -467,19 +552,41 @@ void CollisionSystem::onUpdate(float deltaTime) {
 
 			if (memo[smaller][bigger]) continue;
 
-			if (!checkCollisionUsingBoundingVolumes(gameObjects[i], gameObjects[j])) continue;
+			if (!checkCollisionUsingBoundingVolumes(
+				gameObjects[i]->getTransformComponent()->absolutePosition(),
+				gameObjects[i]->getPhysicsComponent().boundingVolume,
+				gameObjects[j]->getTransformComponent()->absolutePosition(),
+				gameObjects[j]->getPhysicsComponent().boundingVolume)
+				) {
+				continue;
+			}
 
-			CollisionInfo collision = checkCollisionUsingSAT(gameObjects[i], gameObjects[j], map);
+			CollisionInfo collision = checkCollisionUsingSAT(gameObjects[i], gameObjects[j], verticesMap);
 			if (collision.collides) {
-				setForces(collision);
+
+				//setForces(collision);
+				createCollisionPoints(collisionPointMap, collision);
+
 				memo[smaller][bigger] = true;
-				if(gameObjects.size() > i)
-					gameObjects[i]->getPhysicsComponent().onHitEvent.broadcast(gameObjects[i],gameObjects[j]);
-				if(gameObjects.size() > j)
-					gameObjects[j]->getPhysicsComponent().onHitEvent.broadcast(gameObjects[j],gameObjects[i]);
+				if (gameObjects.size() > i)
+					gameObjects[i]->getPhysicsComponent().onHitEvent.broadcast(gameObjects[i], gameObjects[j]);
+				if (gameObjects.size() > j)
+					gameObjects[j]->getPhysicsComponent().onHitEvent.broadcast(gameObjects[j], gameObjects[i]);
 			}
 
 		}
 	}
 
+	for (GameObject* obj : gameObjects) {
+		if (collisionPointMap.find(obj->getId()) == collisionPointMap.end()) continue;
+
+		setGameObjectsVelocityAfterCollision(
+			obj->getVelocityComponent().linearVelocity,
+			obj->getVelocityComponent().rotation,
+			collisionPointMap[obj->getId()],
+			obj->getPhysicsComponent().mass,
+			obj->getPhysicsComponent().elasticity,
+			obj->getPhysicsComponent().rotates
+		);
+	}
 }
