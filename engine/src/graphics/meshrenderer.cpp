@@ -33,7 +33,7 @@ void MeshRenderer::render(const std::vector<GameObject*>& gameObjects, Camera* c
 		}
 
 		glBindVertexArray(object->getMeshComponent()->getVao());
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawArrays(GL_TRIANGLES, 0, object->getMeshComponent()->getVertices().size());
 
 	}
 }

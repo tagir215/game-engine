@@ -4,6 +4,7 @@ set(SFML_BUILD_NETWORK OFF CACHE BOOL "" FORCE)
 add_subdirectory("SFML-2.6.0")
 add_subdirectory(glfw-3.4)
 add_subdirectory(glm-0.9.9.7)
+add_subdirectory(tinyxml2-10.0.0)
 
 option(GLFW_BUILD_EXAMPLES "" OFF)
 option(GLFW_BUILD_TESTS "" OFF)

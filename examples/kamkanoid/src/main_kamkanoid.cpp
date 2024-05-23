@@ -12,13 +12,6 @@ public:
 		sceneManager.attachScene<Level_2>("level_2");
 	}
 
-	virtual void update(float deltaTime) {
-		// TODO: Update logic comes here
-	}
-
-	virtual void render() {
-		// TODO: Redner objects using renderer methods
-	}
 private:
 };
 

@@ -10,7 +10,7 @@ file(GLOB ASSET_SOURCES "assets/basicShapes/*.cpp")
 
 add_library(engine ${ENGINE_INC_FILES} ${ENGINE_SRC_FILES} ${ASSET_HEADERS} ${ASSET_SOURCES})
 
-target_link_libraries(engine PUBLIC sfml-graphics PUBLIC glm PUBLIC glfw)
+target_link_libraries(engine PUBLIC sfml-graphics PUBLIC glm PUBLIC glfw PUBLIC tinyxml2)
 target_include_directories(engine PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include> 

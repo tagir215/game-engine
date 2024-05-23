@@ -94,6 +94,7 @@ public:
 	Scene* getScene() const {
 		return scene;
 	}
+	
 
 	void setTextureComponent(TextureComponent* newTexture) {
 		texture = newTexture;

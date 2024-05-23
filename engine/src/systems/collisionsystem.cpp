@@ -122,6 +122,7 @@ CollisionSystem::CollisionInfo CollisionSystem::checkCollisionUsingSAT(GameObjec
 		glm::vec3 mov1 = object1->getVelocityComponent().linearVelocity;
 		glm::vec3 mov2 = object2->getVelocityComponent().linearVelocity;
 
+		
 		if (collisionA.shortestDistFromCollisionPointToEdgePoint > collisionB.shortestDistFromCollisionPointToEdgePoint) {
 			collisionA.objectA = object1;
 			collisionA.objectB = object2;
@@ -247,7 +248,7 @@ glm::vec3 CollisionSystem::combineWithRotation(glm::vec3& objLinearVelocity, glm
 	glm::vec3 normal = glm::normalize(collisionInfo.collisionNormal);
 	glm::vec3 rotVecProjection = glm::dot(normal, rotVec) * normal;
 
-	glm::vec3 velocityRotationAdded = rotVecProjection  + objLinearVelocity;
+	glm::vec3 velocityRotationAdded = rotVecProjection + objLinearVelocity;
 	return velocityRotationAdded;
 }
 
@@ -259,7 +260,7 @@ CollisionSystem::SpeedsAfterCollision CollisionSystem::calculateCollisionVelocit
 	glm::vec3 v2n = glm::dot(v2, normal) * normal;
 
 	//u1 = v1m1 + v2m2 - v1m2 + v2m2 / (m1 + m2)
-	glm::vec3 v1f = (v1n*m1 + v2n*m2 - v1n*m2 + v2n*m2) / (m1 + m2);
+	glm::vec3 v1f = (v1n * m1 + v2n * m2 - v1n * m2 + v2n * m2) / (m1 + m2);
 	//u2 = v1 + u1 - v2
 	glm::vec3 v2f = v1n + v1f - v2n;
 
@@ -267,7 +268,7 @@ CollisionSystem::SpeedsAfterCollision CollisionSystem::calculateCollisionVelocit
 	float speed1 = glm::length(v1f);
 	float speed2 = glm::length(v2f);
 
-	return SpeedsAfterCollision(speed1,speed2);
+	return SpeedsAfterCollision(speed1, speed2);
 }
 
 
@@ -308,15 +309,15 @@ void CollisionSystem::setForces(CollisionInfo& collisionInfo) {
 	glm::vec3 collisionPointCentroid = calculateCentroid(collisionInfo.collisionPoints);
 
 	glm::vec3 velocityRotationAddedA = combineWithRotation(
-		objA->getVelocityComponent().linearVelocity, 
-		objA->getVelocityComponent().rotation, 
-		collisionInfo, 
+		objA->getVelocityComponent().linearVelocity,
+		objA->getVelocityComponent().rotation,
+		collisionInfo,
 		collisionPointCentroid
 	);
 	glm::vec3 velocityRotationAddedB = combineWithRotation(
-		objB->getVelocityComponent().linearVelocity, 
-		objB->getVelocityComponent().rotation, 
-		collisionInfo, 
+		objB->getVelocityComponent().linearVelocity,
+		objB->getVelocityComponent().rotation,
+		collisionInfo,
 		collisionPointCentroid
 	);
 
@@ -451,7 +452,7 @@ float CollisionSystem::calculateEnergyFromRotation(float mass, const glm::vec3& 
 }
 
 float CollisionSystem::calculateEnergyFromLinearVelocity(float mass, const glm::vec3& linearVelocity) {
-	float energy = 0.5f * mass * std::pow(glm::length(linearVelocity),2);
+	float energy = 0.5f * mass * std::pow(glm::length(linearVelocity), 2);
 	return energy;
 }
 
@@ -483,10 +484,10 @@ void CollisionSystem::setGameObjectsVelocityAfterCollision(glm::vec3& linearVelo
 			float weight = cpA.mass / maxMass;
 
 			if (aCausesClockwiseRotation) {
-				rotationalVecToAdd += glm::vec3(0, 0, (glm::length(cpA.velocity) / radius ) * weight);
+				rotationalVecToAdd += glm::vec3(0, 0, (glm::length(cpA.velocity) / radius) * weight);
 			}
 			else {
-				rotationalVecToAdd -= glm::vec3(0, 0, (glm::length(cpA.velocity) / radius ) * weight);
+				rotationalVecToAdd -= glm::vec3(0, 0, (glm::length(cpA.velocity) / radius) * weight);
 			}
 		}
 
