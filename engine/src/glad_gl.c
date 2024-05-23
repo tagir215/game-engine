@@ -512,7 +512,7 @@ PFNGLRASTERPOS4SPROC glad_glRasterPos4s = NULL;
 PFNGLRASTERPOS4SVPROC glad_glRasterPos4sv = NULL;
 PFNGLREADBUFFERPROC glad_glReadBuffer = NULL;
 PFNGLREADPIXELSPROC glad_glReadPixels = NULL;
-PFNGLREADNPIXELSPROC glad_glReadnPixels = NULL;
+//PFNGLREADNPIXELSPROC glad_glReadnPixels = NULL;
 PFNGLREADNPIXELSARBPROC glad_glReadnPixelsARB = NULL;
 PFNGLRECTDPROC glad_glRectd = NULL;
 PFNGLRECTDVPROC glad_glRectdv = NULL;
@@ -1580,7 +1580,7 @@ static void glad_gl_load_GL_ARB_robustness( GLADuserptrloadfunc load, void* user
     glGetnUniformfvARB = (PFNGLGETNUNIFORMFVARBPROC) load("glGetnUniformfvARB", userptr);
     glGetnUniformivARB = (PFNGLGETNUNIFORMIVARBPROC) load("glGetnUniformivARB", userptr);
     glGetnUniformuivARB = (PFNGLGETNUNIFORMUIVARBPROC) load("glGetnUniformuivARB", userptr);
-    glReadnPixels = (PFNGLREADNPIXELSPROC) load("glReadnPixels", userptr);
+    //glReadnPixels = (PFNGLREADNPIXELSPROC) load("glReadnPixels", userptr);
     glReadnPixelsARB = (PFNGLREADNPIXELSARBPROC) load("glReadnPixelsARB", userptr);
 }
 static void glad_gl_load_GL_KHR_debug( GLADuserptrloadfunc load, void* userptr) {
