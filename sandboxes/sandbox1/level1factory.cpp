@@ -9,7 +9,7 @@ GameObject* Level1Factory::buildGround(Scene* scene, float mass, glm::vec3 pos, 
 	ground->setMeshComponent(mesh);
 	ground->createComponent<ShaderComponent>(1);
 	ground->createComponent<TransformComponent>(pos,rot,scl);
-	ground->createComponent<PhysicsComponent>(mass, true, 0.4f, false, 0, glm::vec3(ground->getTransformComponent()->scale.x*2, ground->getTransformComponent()->scale.x*2, 1), true);
+	ground->createComponent<PhysicsComponent>(mass, true, 0.4f, false, 0, glm::vec3(ground->getTransformComponent()->scale.x*2, ground->getTransformComponent()->scale.x*2, 1), false);
 	return ground;
 }
 
