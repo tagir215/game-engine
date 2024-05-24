@@ -35,7 +35,7 @@ CollisionSystem::CollisionInfo CollisionSystem::findSeparation(
 	collisionInfo.centroidA = calculateCentroid(verticesA);
 	collisionInfo.centroidB = calculateCentroid(verticesB);
 
-	float mostAlignedNormal = -std::numeric_limits<float>::max();
+	//float mostAlignedNormal = -std::numeric_limits<float>::max();
 	float smallestSeparation = std::numeric_limits<float>::max();
 
 	int j = verticesA.size() - 1;
@@ -62,11 +62,11 @@ CollisionSystem::CollisionInfo CollisionSystem::findSeparation(
 			float sep = glm::length(normal * dotVecToBAndNormal);
 
 			if (dotVecToBAndNormal <= 0 
-				&& dotVecToCentroidAndNormal > mostAlignedNormal
+				//&& dotVecToCentroidAndNormal > mostAlignedNormal
 				&& sep < smallestSeparation) 
 			{
 				smallestSeparation = sep;
-				mostAlignedNormal = dotVecToCentroidAndNormal;
+				//mostAlignedNormal = dotVecToCentroidAndNormal;
 				collisionInfo.separation = sep;
 				collisionInfo.collisionNormal = normal;
 				collisionInfo.edgePoints = std::vector<glm::vec3>();

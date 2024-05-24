@@ -32,6 +32,8 @@ TileMap::TileMap(Scene* scene, const std::string& pathToImage, const std::string
 	}
 
 	tinyxml2::XMLElement* root = doc.RootElement();
+	mapWidth = std::stoi(root->FindAttribute("width")->Value());
+	mapHeight = std::stoi(root->FindAttribute("height")->Value());
 	tinyxml2::XMLElement* layer = root->FirstChildElement("layer");
 	tinyxml2::XMLElement* data = layer->FirstChildElement("data");
 	const std::string text(data->GetText());
@@ -56,18 +58,19 @@ TileMap::TileMap(Scene* scene, const std::string& pathToImage, const std::string
 }
 
 void getCoordinatesFromID(int id, int columns, float& x, float& y) {
-	x = id % columns;
-	y = id / columns;
+	x = (id - 1) % columns;
+	y = (id - 1) / columns;
 	x /= columns;
 	y /= columns;
+	y = 1 - y;
 }
 
 void TileMap::createMesh()
 {
 	float y = 0;
 	float x = 0;
-	float offsetX = 30 * tileWidth;
-	float offsetY = 30 * tileHeight;
+	float offsetX = mapWidth/2 * tileWidth;
+	float offsetY = mapHeight/2 * tileHeight;
 	for (int i = 0; i < tiles.size(); ++i) {
 		if (tiles[i] > 0) {
 			std::vector<float>sq = {
@@ -82,25 +85,26 @@ void TileMap::createMesh()
 				vertices.push_back(f);
 			}
 			float id = tiles[i];
-			if (id > 1000) {
-				id = 105;
+			//remove this at some point lol
+			if (id > columns*columns) {
+				id = 12;
 			}
 			float tx, ty;
-			float tw = 1 / columns;
+			float tw = 1.0f / columns;
 			getCoordinatesFromID(id, columns, tx, ty);
 			std::vector<float>tcoords = {
-				tx,    ty,
+				tx,      ty,
 				tx + tw, ty,
 				tx + tw, ty - tw,
-				tx,    ty,
+				tx,      ty,
 				tx + tw, ty - tw,
-				tx,    ty - tw
+				tx,      ty - tw
 			};
 			for (float f : tcoords) {
 				texCoords.push_back(f);
 			}
 		}
-		if (++x >= 60) {
+		if (++x >= mapWidth) {
 			--y;
 			x = 0;
 		}

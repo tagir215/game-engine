@@ -22,7 +22,7 @@ void Level_1::onStart() {
 	//tilemap->createComponent<PhysicsComponent>(1000000000000000, false, 1, false, 1, glm::vec3(1000, 1000, 1), false);
 
 	Player* player = newObject<Player>();
-	player->createComponent<TransformComponent>(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(25, 25, 1));
+	player->createComponent<TransformComponent>(glm::vec3(-130, -160, 0), glm::vec3(0, 0, 0), glm::vec3(25, 25, 1));
 
 	createWall(glm::vec3(0, -180, 0), glm::vec3(0, 0, 0), glm::vec3(400, 10, 1));
 	createWall(glm::vec3(-200, 0, 0), glm::vec3(0, 0, 0), glm::vec3(10, 400, 1));
