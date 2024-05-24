@@ -85,8 +85,9 @@ void TileMap::createMesh()
 				vertices.push_back(f);
 			}
 			float id = tiles[i];
+			//remove this at some point lol
 			if (id > columns*columns) {
-				id = 0;
+				id = 12;
 			}
 			float tx, ty;
 			float tw = 1.0f / columns;

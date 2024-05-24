@@ -20,4 +20,5 @@ private:
 	GLuint texId;  
 	Keyframes* keyframes;
 	int currentFrame = 0;
+
 };
