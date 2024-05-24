@@ -16,6 +16,8 @@ private:
 	int tileHeight = 0;
 	int tileCount = 0;
 	int columns = 0;
+	int mapWidth = 0;
+	int mapHeight = 0;
 	std::vector<float>vertices;
 	std::vector<float>texCoords;
 
